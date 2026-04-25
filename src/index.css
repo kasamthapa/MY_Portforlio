@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   BASE — warm cream background, ink text, washi-paper feel
+   ============================================================ */
+:root {
+  --color-bg: #FAF7F2;
+  --color-surface: #F5F0E8;
+  --color-ink: #1A1A2E;
+  --color-muted: #B8A9A0;
+  --color-accent: #E8704A;
+  --color-green: #8BA888;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   SCRAPPY MODE — terminal aesthetic, toggled via JS
+   Intentionally stark contrast with the warm default theme.
+   ============================================================ */
+html.scrappy body {
+  background-color: #0A0A0A !important;
+  color: #00FF41 !important;
+}
+
+html.scrappy * {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+html.scrappy h1,
+html.scrappy h2,
+html.scrappy h3 {
+  color: #00FF41 !important;
+  font-style: normal !important;
+}
+
+html.scrappy p,
+html.scrappy span {
+  color: #B0B0B0 !important;
+}
+
+html.scrappy a {
+  color: #64FFDA !important;
+}
+
+html.scrappy [style*="background: rgba(250, 247, 242"],
+html.scrappy [style*="background: #FAF7F2"],
+html.scrappy [style*="background: #F5F0E8"] {
+  background: #111 !important;
+  border-color: #333 !important;
+}
+
+/* Scanline overlay in scrappy mode */
+html.scrappy body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 65, 0.03) 0px,
+    rgba(0, 255, 65, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+/* ============================================================
+   SELECTION — keeps brand colour on text highlight
+   ============================================================ */
+::selection {
+  background: #E8704A;
+  color: #FAF7F2;
+}
+
+/* ============================================================
+   SCROLLBAR — subtle, matches the palette
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F0E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #B8A9A0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E8704A;
+}
+
+/* ============================================================
+   TYPOGRAPHY HELPERS
+   ============================================================ */
+.font-serif {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================================
+   FOCUS — accessible, on-brand
+   ============================================================ */
+*:focus-visible {
+  outline: 2px solid #E8704A;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
