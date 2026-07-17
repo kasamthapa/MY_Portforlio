@@ -4,11 +4,11 @@ import type { Project } from '../../types'
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="border border-[var(--border)] rounded-md overflow-hidden flex flex-col">
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[var(--border)]">
-        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
-        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
-        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
+    <div className="border border-[var(--border)] hover:border-[#4a7a3a] rounded-md overflow-hidden flex flex-col transition-colors duration-300 shadow-[0_0_60px_-15px_rgba(120,200,80,0.15)]">
+      <div className="flex items-center gap-1.5 px-3 py-2 bg-[#14170f] border-b border-[var(--border)]">
+        <span className="w-2 h-2 rounded-full bg-[#4a4f42]" />
+        <span className="w-2 h-2 rounded-full bg-[#4a4f42]" />
+        <span className="w-2 h-2 rounded-full bg-[#4a4f42]" />
         <span className="ml-3 text-xs text-[var(--muted)]">{project.title}</span>
       </div>
 
@@ -55,10 +55,10 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="px-6 md:px-12 lg:px-24 py-20 md:py-28 border-b border-[var(--border)]"
+      className="px-6 md:px-12 lg:px-24 py-12 md:py-16 border-b border-[var(--border)]"
     >
       <div ref={ref} className={inView ? 'animate-fade-in' : 'opacity-0'}>
-        <h2 className="text-sm mb-10">
+        <h2 className="text-sm mb-8">
           <span className="text-[var(--accent)]">~/kasam</span>
           <span className="text-[var(--muted)]"> $ ls projects/</span>
         </h2>
