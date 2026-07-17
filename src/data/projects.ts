@@ -2,28 +2,21 @@ import type { Project } from '../types'
 
 export const projects: Project[] = [
   {
-    id: 'school-website',
-    title: 'School Website',
-    tagline: 'A real institution needed a real web presence.',
-    story:
-      "A local school had nothing online — no pages, no info, no way for parents to find them. I built it from scratch: routing, responsive layout, content structure. The kind of project that makes you realize how much a simple website actually matters to people who need it.",
-    tech: ['React', 'TypeScript', 'Vite', 'CSS'],
-    url: 'https://school-app-frontend-weld.vercel.app/',
-    aiNote:
-      'Used AI to speed up some boilerplate. Wrote the architecture, component design, and deployment myself.',
-    year: '2024',
-    status: 'live',
+    id: 'critch',
+    title: 'critch',
+    description:
+      'A peer review platform for developers. Post a project, get structured feedback on code quality, UI, idea, and documentation. Built from scratch — every line written and understood.',
+    stack: ['React', 'TypeScript', 'Node.js', 'Express', 'PostgreSQL', 'Prisma', 'Cloudinary'],
+    live: 'https://critch-neon.vercel.app',
+    github: 'https://github.com/kasamthapa/critch',
   },
   {
-    id: 'client-portfolio',
-    title: 'Portfolio for a Client',
-    tagline: "Translating someone else's identity into pixels.",
-    story:
-      "The hard part wasn't the code — it was listening. Understanding what a person wants their online presence to say, then building something that actually says it. Clean, fast, minimal. Exactly how they wanted to be seen.",
-    tech: ['React', 'JavaScript', 'CSS'],
-    url: 'https://portfolio-dhurbasir-2.vercel.app/',
-    aiNote: 'Collaborated with AI for layout suggestions. Final design decisions and code were mine.',
-    year: '2024',
-    status: 'live',
+    id: 'codebrain',
+    title: 'codebrain',
+    description:
+      'Point it at any GitHub repo and ask questions about the code. RAG pipeline built from scratch — no LangChain. AST chunking, Gemini embeddings, pgvector similarity search, SSE streaming.',
+    stack: ['React', 'TypeScript', 'Node.js', 'Express', 'PostgreSQL', 'pgvector', 'Gemini API', 'RAG'],
+    live: 'https://codebrain-gamma.vercel.app',
+    github: 'https://github.com/kasamthapa/codebrain',
   },
 ]
