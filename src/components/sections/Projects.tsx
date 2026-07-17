@@ -1,145 +1,73 @@
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
 import { projects } from '../../data/projects'
+import { useInView } from '../../hooks/useInView'
 import type { Project } from '../../types'
 
-const STATUS_STYLES = {
-  live: { label: 'live', bg: '#BBF7D0', color: '#166534' },
-  wip: { label: 'wip', bg: '#FDE68A', color: '#92400E' },
-  archived: { label: 'archived', bg: '#E5E7EB', color: '#6B7280' },
-}
-
-function ProjectLog({ project, index }: { project: Project; index: number }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const status = STATUS_STYLES[project.status]
-
+function ProjectCard({ project }: { project: Project }) {
   return (
-    <motion.article
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: index * 0.15 }}
-      className="group relative rounded-2xl p-7 md:p-10 border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-      style={{
-        background: 'rgba(250, 247, 242, 0.6)',
-        borderColor: '#E8E0D5',
-        backdropFilter: 'blur(4px)',
-      }}
-    >
-      {/* Header row */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
+    <div className="border border-[var(--border)] rounded-md overflow-hidden flex flex-col">
+      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[var(--border)]">
+        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
+        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
+        <span className="w-2.5 h-2.5 rounded-full border border-[var(--muted)]" />
+        <span className="ml-3 text-xs text-[var(--muted)]">{project.title}</span>
+      </div>
+
+      <div className="p-5 md:p-6 flex flex-col flex-1">
+        <p className="leading-relaxed mb-5 text-sm md:text-base">{project.description}</p>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          {project.stack.map((tag) => (
             <span
-              className="font-mono text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ background: status.bg, color: status.color }}
+              key={tag}
+              className="text-xs border border-[var(--border)] text-[var(--accent)] px-2 py-1 rounded"
             >
-              {status.label}
+              {tag}
             </span>
-            <span className="font-mono text-xs" style={{ color: '#B8A9A0' }}>
-              {project.year}
-            </span>
-          </div>
-          <h3
-            className="font-serif text-2xl md:text-3xl font-semibold"
-            style={{ color: '#1A1A2E' }}
-          >
-            {project.title}
-          </h3>
-          <p className="mt-1 font-sans text-sm italic" style={{ color: '#8BA888' }}>
-            {project.tagline}
-          </p>
+          ))}
         </div>
 
-        {/* External link */}
-        <motion.a
-          href={project.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-mono text-xs font-medium border transition-colors hover:border-terracotta"
-          style={{ borderColor: '#E8E0D5', color: '#2D3A3A' }}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-        >
-          view live
-          <span>↗</span>
-        </motion.a>
-      </div>
-
-      {/* Story */}
-      <p className="font-sans text-base leading-relaxed mb-6" style={{ color: '#2D3A3A' }}>
-        {project.story}
-      </p>
-
-      {/* AI note — shown honestly, not hidden */}
-      {project.aiNote && (
-        <div
-          className="mb-6 flex gap-3 rounded-xl p-4 text-sm"
-          style={{ background: '#F5F0E8', borderLeft: '3px solid #E8704A' }}
-        >
-          <span className="text-lg leading-none">🤖</span>
-          <p className="font-sans leading-relaxed" style={{ color: '#B8A9A0' }}>
-            <span className="font-medium" style={{ color: '#E8704A' }}>AI note: </span>
-            {project.aiNote}
-          </p>
-        </div>
-      )}
-
-      {/* Tech stack pills */}
-      <div className="flex flex-wrap gap-2">
-        {project.tech.map((t) => (
-          <span
-            key={t}
-            className="font-mono text-xs px-3 py-1 rounded-full border"
-            style={{ borderColor: '#E8E0D5', color: '#8BA888' }}
+        <div className="flex gap-6 text-sm mt-auto">
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--accent)] hover:underline underline-offset-4"
           >
-            {t}
-          </span>
-        ))}
+            live →
+          </a>
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--muted)] hover:text-[var(--accent)] hover:underline underline-offset-4"
+          >
+            github →
+          </a>
+        </div>
       </div>
-
-      {/* Decorative corner accent */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-4 right-4 font-mono text-5xl opacity-5 select-none group-hover:opacity-10 transition-opacity"
-        style={{ color: '#E8704A' }}
-      >
-        {String(index + 1).padStart(2, '0')}
-      </div>
-    </motion.article>
+    </div>
   )
 }
 
 export default function Projects() {
-  const titleRef = useRef(null)
-  const inView = useInView(titleRef, { once: true })
+  const { ref, inView } = useInView<HTMLDivElement>()
 
   return (
-    <section id="projects" className="px-6 md:px-16 lg:px-24 py-24 md:py-32">
-      <motion.div
-        ref={titleRef}
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
-        className="mb-16"
-      >
-        <span className="font-mono text-sm" style={{ color: '#8BA888' }}>/ the work</span>
-        <h2
-          className="mt-3 font-serif text-4xl md:text-5xl font-bold"
-          style={{ color: '#1A1A2E' }}
-        >
-          Things I've shipped.
+    <section
+      id="projects"
+      className="px-6 md:px-12 lg:px-24 py-20 md:py-28 border-b border-[var(--border)]"
+    >
+      <div ref={ref} className={inView ? 'animate-fade-in' : 'opacity-0'}>
+        <h2 className="text-sm mb-10">
+          <span className="text-[var(--accent)]">~/kasam</span>
+          <span className="text-[var(--muted)]"> $ ls projects/</span>
         </h2>
-        <p className="mt-3 font-sans text-base max-w-md" style={{ color: '#B8A9A0' }}>
-          Presented as build logs — because the story of how something got made matters as much as what it is.
-        </p>
-      </motion.div>
 
-      <div className="flex flex-col gap-6 max-w-3xl">
-        {projects.map((p, i) => (
-          <ProjectLog key={p.id} project={p} index={i} />
-        ))}
+        <div className="grid md:grid-cols-2 gap-6">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       </div>
     </section>
   )
