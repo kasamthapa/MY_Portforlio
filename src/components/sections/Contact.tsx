@@ -15,9 +15,9 @@ export default function Contact() {
   const { ref, inView } = useInView<HTMLDivElement>()
 
   return (
-    <section id="contact" className="px-6 md:px-12 lg:px-24 py-20 md:py-28">
+    <section id="contact" className="px-6 md:px-12 lg:px-24 py-12 md:py-16">
       <div ref={ref} className={inView ? 'animate-fade-in' : 'opacity-0'}>
-        <h2 className="text-sm mb-10">
+        <h2 className="text-sm mb-8">
           <span className="text-[var(--accent)]">~/kasam</span>
           <span className="text-[var(--muted)]"> $ cat contact.txt</span>
         </h2>
