@@ -23,6 +23,8 @@ html {
 
 body {
   background-color: var(--bg);
+  background-image: radial-gradient(circle, #1a1c18 1px, transparent 1px);
+  background-size: 28px 28px;
   color: var(--text);
   font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   line-height: 1.6;
@@ -75,4 +77,22 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-fade-in-delayed {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* ============================================================
+   PORTRAIT BITS — a photo re-rendered as a grid of 0/1 glyphs,
+   each cell fading in to its own brightness-mapped opacity
+   ============================================================ */
+@keyframes portraitFadeIn {
+  from { opacity: 0; }
+  to { opacity: var(--op, 1); }
+}
+
+.portrait-bit {
+  position: absolute;
+  animation: portraitFadeIn 0.6s ease both;
 }
