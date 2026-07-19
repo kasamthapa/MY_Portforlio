@@ -1,7 +1,7 @@
 import { useInView } from '../../hooks/useInView'
 
 const STACK = [
-  { label: 'strong', items: ['TypeScript', 'React', 'Node.js', 'Express', 'PostgreSQL', 'Prisma'] },
+  { label: 'using', items: ['TypeScript', 'React', 'Node.js', 'Express', 'PostgreSQL', 'Prisma'] },
   { label: 'building', items: ['RAG pipelines', 'pgvector', 'Docker', 'system design'] },
 ]
 
