@@ -47,6 +47,7 @@ export default function StatusBar({ language, terminalOpen, theme, onToggleTermi
         </button>
         <button
           onClick={onToggleTerminal}
+          title={terminalOpen ? 'Hide Terminal' : 'Show Terminal'}
           className={`flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/15 ${
             terminalOpen ? 'bg-white/15' : ''
           }`}

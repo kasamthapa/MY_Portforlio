@@ -81,7 +81,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
       <div className="p-5 md:p-7 grid md:grid-cols-[210px_1fr] gap-6 md:gap-10">
         {/* meta column */}
         <div className="md:border-r border-[var(--vs-border)] md:pr-8">
-          <h3 className="text-xl font-semibold text-[var(--vs-text)] mb-2">{project.title}</h3>
+          <h2 className="text-xl font-semibold text-[var(--vs-text)] mb-2">{project.title}</h2>
           <p className="text-sm text-[var(--vs-muted)] leading-relaxed mb-5">{project.tagline}</p>
 
           <div className="flex flex-wrap md:flex-col gap-1.5 mb-6">
@@ -135,7 +135,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           </div>
 
           <div className="flex gap-2.5 p-3 rounded-md border border-[var(--vs-panel-border)] bg-[var(--vs-hover)]">
-            <WarningIcon size={14} className="text-[#e0a458] shrink-0 mt-0.5" />
+            <WarningIcon size={14} className="text-[var(--vs-warning-icon)] shrink-0 mt-0.5" />
             <div>
               <p className="text-[11px] uppercase tracking-wide text-[var(--vs-muted)] mb-1">Known limitation</p>
               <p className="text-sm text-[var(--vs-text)] leading-relaxed">{project.limitation}</p>

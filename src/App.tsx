@@ -137,7 +137,7 @@ export default function App() {
       <TitleBar onMenuClick={() => setSidebarOpen((v) => !v)} onQuickOpen={() => setPaletteOpen(true)} />
 
       <div className="flex-1 flex min-h-0 relative">
-        <ActivityBar />
+        <ActivityBar onSearchClick={() => setPaletteOpen(true)} />
 
         {/* desktop sidebar */}
         <div className="hidden lg:block w-60 shrink-0 border-r border-black/40">
@@ -205,7 +205,7 @@ export default function App() {
 
       {toast && (
         <div className="fixed bottom-5 right-5 z-[70] flex items-center gap-2 px-3.5 py-2 rounded-md bg-[var(--vs-palette-bg)] border border-[var(--vs-panel-border)] text-[12px] text-[var(--vs-text)] shadow-lg animate-toast-in">
-          <CheckIcon size={13} className="text-[#89d185]" />
+          <CheckIcon size={13} className="text-[var(--vs-success)]" />
           {toast}
         </div>
       )}

@@ -45,6 +45,9 @@
   --vs-hero-grad-start: #ffffff;
   --vs-hero-grad-end: #9cdcfe;
   --vs-glow: #3794ff;
+
+  --vs-success: #89d185;
+  --vs-warning-icon: #e0a458;
 }
 
 /* ============================================================
@@ -91,6 +94,10 @@
   --vs-hero-grad-start: #1e1e1e;
   --vs-hero-grad-end: #0066b8;
   --vs-glow: #0066b8;
+
+  /* darker than the dark-theme equivalents — #89d185/#e0a458 fail WCAG AA (~1.8:1) on a white surface */
+  --vs-success: #166534;
+  --vs-warning-icon: #8a5300;
 }
 
 * {
