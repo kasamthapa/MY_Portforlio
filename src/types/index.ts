@@ -6,5 +6,3 @@ export interface Project {
   live: string
   github: string
 }
-
-export type SectionId = 'hero' | 'projects' | 'stack' | 'now' | 'contact'
