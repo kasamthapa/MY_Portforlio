@@ -46,7 +46,7 @@ function Preview() {
             {row.items.map((item) => (
               <span
                 key={item}
-                className="text-sm px-3 py-1.5 rounded-md border border-[var(--vs-panel-border)] text-[var(--vs-type)] bg-[#252526]"
+                className="text-sm px-3 py-1.5 rounded-md border border-[var(--vs-panel-border)] text-[var(--vs-type)] bg-[var(--vs-palette-bg)]"
               >
                 {item}
               </span>

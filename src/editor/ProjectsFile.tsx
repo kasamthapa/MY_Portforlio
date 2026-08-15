@@ -26,7 +26,22 @@ function buildLines(): Line[] {
     lines.push({ indent: 1, content: pn('{') })
     lines.push({ indent: 2, content: <>{vr('title')}{pn(':')} {str(`'${p.title}'`)}{pn(',')}</> })
     lines.push({ indent: 2, content: <>{vr('description')}{pn(':')} {str(`'${p.description.slice(0, 46)}…'`)}{pn(',')}</> })
-    lines.push({ indent: 2, content: <>{vr('stack')}{pn(': [')}{p.stack.map((s) => str(`'${s}'`)).reduce((acc, el, i) => (i === 0 ? [el] : [...acc, pn(', '), el]), [] as ReactNode[])}{pn('],')}</> })
+    lines.push({
+      indent: 2,
+      content: (
+        <>
+          {vr('stack')}
+          {pn(': [')}
+          {p.stack.map((s, i) => (
+            <span key={s}>
+              {i > 0 && pn(', ')}
+              {str(`'${s}'`)}
+            </span>
+          ))}
+          {pn('],')}
+        </>
+      ),
+    })
     lines.push({ indent: 2, content: <>{vr('live')}{pn(':')} {str(`'${p.live}'`)}{pn(',')}</> })
     lines.push({ indent: 1, content: pn('},') })
   })
@@ -50,8 +65,8 @@ function Code() {
 
 function ProjectCard({ project }: { project: (typeof projects)[number] }) {
   return (
-    <div className="border border-[var(--vs-panel-border)] hover:border-[#3794ff] rounded-md overflow-hidden flex flex-col transition-colors duration-300 bg-[#1e1e1e]">
-      <div className="flex items-center gap-1.5 px-3 py-2 bg-[#252526] border-b border-[var(--vs-border)]">
+    <div className="border border-[var(--vs-panel-border)] hover:border-[var(--vs-accent-bright)] rounded-md overflow-hidden flex flex-col transition-colors duration-300 bg-[var(--vs-bg)]">
+      <div className="flex items-center gap-1.5 px-3 py-2 bg-[var(--vs-palette-bg)] border-b border-[var(--vs-border)]">
         <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
         <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
         <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
@@ -77,7 +92,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
             href={project.live}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#3794ff] hover:underline underline-offset-4"
+            className="text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
           >
             live →
           </a>
@@ -85,7 +100,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--vs-muted)] hover:text-[#3794ff] hover:underline underline-offset-4"
+            className="text-[var(--vs-muted)] hover:text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
           >
             github →
           </a>

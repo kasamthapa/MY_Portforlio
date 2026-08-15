@@ -23,6 +23,10 @@ export default function App() {
   const [booted, setBooted] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout>>()
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window === 'undefined') return 'dark'
+    return (localStorage.getItem('vs-theme') as 'dark' | 'light') || 'dark'
+  })
 
   const activeFile = FILES.find((f) => f.id === activeId) ?? FILES[0]
 
@@ -30,6 +34,11 @@ export default function App() {
     const t = setTimeout(() => setBooted(true), 550)
     return () => clearTimeout(t)
   }, [])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('vs-theme', theme)
+  }, [theme])
 
   function showToast(message: string) {
     setToast(message)
@@ -56,6 +65,11 @@ export default function App() {
       },
       { id: 'terminal', label: 'View: Toggle Terminal', detail: 'Ctrl+`', run: toggleTerminal },
       {
+        id: 'theme',
+        label: theme === 'dark' ? 'Preferences: Switch to Light+ Theme' : 'Preferences: Switch to Dark+ Theme',
+        run: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
+      },
+      {
         id: 'github',
         label: 'Open: GitHub Profile',
         run: () => window.open('https://github.com/kasamthapa', '_blank', 'noopener,noreferrer'),
@@ -75,7 +89,7 @@ export default function App() {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [zenMode, terminalOpen]
+    [zenMode, terminalOpen, theme]
   )
 
   useEffect(() => {
@@ -117,13 +131,17 @@ export default function App() {
 
   return (
     <div className="vscode-shell flex flex-col overflow-hidden relative">
+      <a href="#editor-panel" className="skip-link">
+        Skip to content
+      </a>
+
       <div
         className={`absolute inset-0 z-[100] flex flex-col items-center justify-center gap-3 bg-[var(--vs-bg)] transition-opacity duration-500 ${
           booted ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
         aria-hidden={booted}
       >
-        <div className="w-8 h-8 rounded-full border-2 border-[var(--vs-panel-border)] border-t-[#3794ff] animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[var(--vs-panel-border)] border-t-[var(--vs-accent-bright)] animate-spin" />
         <p className="text-xs text-[var(--vs-muted)] tracking-wide">kasam-portfolio</p>
       </div>
 
@@ -132,7 +150,7 @@ export default function App() {
           <activeFile.Preview />
           <button
             onClick={() => setZenMode(false)}
-            className="fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#252526] border border-[var(--vs-panel-border)] text-[11px] text-[var(--vs-muted)] shadow-lg hover:text-[var(--vs-text)] transition-colors"
+            className="fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--vs-palette-bg)] border border-[var(--vs-panel-border)] text-[11px] text-[var(--vs-muted)] shadow-lg hover:text-[var(--vs-text)] transition-colors"
             style={{ transitionTimingFunction: EASE }}
           >
             <kbd className="border border-[var(--vs-panel-border)] rounded px-1.5 py-0.5">esc</kbd>
@@ -165,9 +183,21 @@ export default function App() {
             )}
 
             <div className="flex-1 flex flex-col min-w-0">
-              <Tabs openIds={openIds} activeId={activeId} onSelect={setActiveId} onClose={closeTab} />
+              <Tabs
+                openIds={openIds}
+                activeId={activeId}
+                onSelect={setActiveId}
+                onClose={closeTab}
+                panelId="editor-panel"
+              />
 
-              <div className="flex-1 min-h-0">
+              <div
+                id="editor-panel"
+                role="tabpanel"
+                aria-labelledby={`tab-${activeId}`}
+                tabIndex={0}
+                className="flex-1 min-h-0 focus:outline-none"
+              >
                 <SplitPane
                   key={activeFile.id}
                   previewLabel={activeFile.previewLabel}
@@ -195,8 +225,10 @@ export default function App() {
           <StatusBar
             language={activeFile.language === 'json' ? 'JSON' : 'TypeScript'}
             terminalOpen={terminalOpen}
+            theme={theme}
             onToggleTerminal={toggleTerminal}
             onToggleZen={() => setZenMode(true)}
+            onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
           />
         </>
       )}
@@ -206,7 +238,7 @@ export default function App() {
       )}
 
       {toast && (
-        <div className="fixed bottom-5 right-5 z-[70] flex items-center gap-2 px-3.5 py-2 rounded-md bg-[#252526] border border-[var(--vs-panel-border)] text-[12px] text-[var(--vs-text)] shadow-lg animate-toast-in">
+        <div className="fixed bottom-5 right-5 z-[70] flex items-center gap-2 px-3.5 py-2 rounded-md bg-[var(--vs-palette-bg)] border border-[var(--vs-panel-border)] text-[12px] text-[var(--vs-text)] shadow-lg animate-toast-in">
           <CheckIcon size={13} className="text-[#89d185]" />
           {toast}
         </div>

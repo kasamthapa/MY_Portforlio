@@ -100,11 +100,14 @@ const SUGGESTIONS = [
 function IntelliSense() {
   return (
     <div
-      className="not-italic font-normal absolute left-0 top-full mt-1 w-72 max-w-[80vw] rounded-md border border-[var(--vs-panel-border)] bg-[#252526] shadow-2xl overflow-hidden z-10 animate-suggest-in text-[12px] normal-case tracking-normal"
+      className="not-italic font-normal absolute left-0 top-full mt-1 w-72 max-w-[80vw] rounded-md border border-[var(--vs-panel-border)] bg-[var(--vs-palette-bg)] shadow-2xl overflow-hidden z-10 animate-suggest-in text-[12px] normal-case tracking-normal"
       aria-hidden="true"
     >
       {SUGGESTIONS.map((item, i) => (
-        <div key={item.text} className={`flex items-center gap-2 px-2 py-1.5 ${i === 0 ? 'bg-[#04395e]' : ''}`}>
+        <div
+          key={item.text}
+          className={`flex items-center gap-2 px-2 py-1.5 ${i === 0 ? 'bg-[var(--vs-palette-selected-bg)]' : ''}`}
+        >
           <span
             className="w-4 h-4 rounded-sm flex items-center justify-center text-[10px] font-bold shrink-0"
             style={{ background: `${item.color}33`, color: item.color }}
@@ -131,10 +134,18 @@ function Preview() {
 
           <h1
             className="relative text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] bg-clip-text text-transparent"
-            style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 30%, #9cdcfe 100%)' }}
+            style={{
+              backgroundImage: 'linear-gradient(135deg, var(--vs-hero-grad-start) 30%, var(--vs-hero-grad-end) 100%)',
+            }}
           >
             {step >= 1 && (
-              <TypeIn text="Kasam Thapa Magar" speed={45} cursor cursorColor="#9cdcfe" onDone={() => setStep(2)} />
+              <TypeIn
+                text="Kasam Thapa Magar"
+                speed={45}
+                cursor
+                cursorColor="var(--vs-hero-grad-end)"
+                onDone={() => setStep(2)}
+              />
             )}
             {step === 1 && <IntelliSense />}
           </h1>
@@ -161,7 +172,7 @@ function Preview() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1 border border-[var(--vs-panel-border)] rounded-sm text-[#3794ff] hover:border-[#3794ff] hover:bg-[var(--vs-hover)] transition-colors duration-200"
+                className="px-3 py-1 border border-[var(--vs-panel-border)] rounded-sm text-[var(--vs-accent-bright)] hover:border-[var(--vs-accent-bright)] hover:bg-[var(--vs-hover)] transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -199,7 +210,7 @@ function Preview() {
         <div className="hidden lg:block relative shrink-0" style={{ width: 260, height: 260 }} aria-hidden="true">
           <div
             className="absolute inset-0 rounded-full blur-3xl opacity-25 -z-10"
-            style={{ background: 'radial-gradient(circle, #3794ff, transparent 65%)' }}
+            style={{ background: 'radial-gradient(circle, var(--vs-glow), transparent 65%)' }}
           />
           {step >= 3 &&
             PORTRAIT_BITS.map((bit, i) => (
@@ -211,7 +222,7 @@ function Preview() {
                     top: `${(bit.r / PORTRAIT_ROWS) * 100}%`,
                     left: `${(bit.c / PORTRAIT_COLS) * 100}%`,
                     fontSize: 7,
-                    color: bit.a ? '#3794ff' : 'var(--vs-muted)',
+                    color: bit.a ? 'var(--vs-glow)' : 'var(--vs-muted)',
                     '--op': bit.op,
                     animationDelay: `${0.3 + bit.r * 0.015}s`,
                   } as CSSProperties

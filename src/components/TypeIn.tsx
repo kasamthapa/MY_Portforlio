@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 interface Props {
   text: string
@@ -21,10 +22,12 @@ export default function TypeIn({
   cursorColor,
   onDone,
 }: Props) {
-  const [count, setCount] = useState(0)
+  const reducedMotion = usePrefersReducedMotion()
+  const [count, setCount] = useState(reducedMotion ? text.length : 0)
   const done = count >= text.length
 
   useEffect(() => {
+    if (reducedMotion) return
     if (done) {
       onDone?.()
       return
@@ -32,9 +35,15 @@ export default function TypeIn({
     const t = setTimeout(() => setCount((c) => c + 1), speed)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, done, speed])
+  }, [count, done, speed, reducedMotion])
 
-  const showCursor = (cursor && !done) || (trailingCursor && done)
+  // Reduced motion: skip straight to the finished state, once.
+  useEffect(() => {
+    if (reducedMotion) onDone?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reducedMotion])
+
+  const showCursor = !reducedMotion && ((cursor && !done) || (trailingCursor && done))
 
   return (
     <span className={className}>

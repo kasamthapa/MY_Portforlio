@@ -19,6 +19,7 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
   const [query, setQuery] = useState('')
   const [index, setIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const lastFocused = useRef<HTMLElement | null>(null)
 
   const isCommandMode = query.startsWith('>')
   const term = isCommandMode ? query.slice(1).trim().toLowerCase() : query.toLowerCase()
@@ -31,9 +32,14 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
   const fileResults = isCommandMode ? [] : FILES.filter((f) => matches(f.name))
   const commandResults = isCommandMode ? commands.filter((c) => matches(c.label)) : []
   const resultCount = isCommandMode ? commandResults.length : fileResults.length
+  const activeOptionId = resultCount > 0 ? `palette-option-${index}` : undefined
 
   useEffect(() => {
+    lastFocused.current = document.activeElement as HTMLElement
     inputRef.current?.focus()
+    return () => {
+      lastFocused.current?.focus?.()
+    }
   }, [])
 
   useEffect(() => {
@@ -71,13 +77,21 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-lg overflow-hidden border border-[var(--vs-panel-border)] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.75)] bg-[#252526] animate-palette-in"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command Palette"
+        className="w-full max-w-lg rounded-lg overflow-hidden border border-[var(--vs-panel-border)] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.75)] bg-[var(--vs-palette-bg)] animate-palette-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-black/30 bg-[#1e1e1e]">
+        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-black/30 bg-[var(--vs-palette-header-bg)]">
           <SearchIcon size={14} className="text-[var(--vs-muted)] shrink-0" />
           <input
             ref={inputRef}
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="palette-listbox"
+            aria-autocomplete="list"
+            aria-activedescendant={activeOptionId}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -89,7 +103,7 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
           </kbd>
         </div>
 
-        <div className="max-h-72 overflow-y-auto py-1">
+        <div id="palette-listbox" role="listbox" aria-label="Results" className="max-h-72 overflow-y-auto py-1">
           {resultCount === 0 && (
             <p className="px-4 py-6 text-center text-[13px] text-[var(--vs-muted)]">
               {isCommandMode ? 'No matching commands' : 'No matching files'}
@@ -100,10 +114,15 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
             fileResults.map((file, i) => (
               <button
                 key={file.id}
+                id={`palette-option-${i}`}
+                role="option"
+                aria-selected={i === index}
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => pick(i)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 text-left text-[13px] ${
-                  i === index ? 'bg-[#04395e] text-white' : 'text-[var(--vs-text)]'
+                  i === index
+                    ? 'bg-[var(--vs-palette-selected-bg)] text-[var(--vs-palette-selected-text)]'
+                    : 'text-[var(--vs-text)]'
                 }`}
               >
                 {file.language === 'json' ? <JsonFileIcon size={14} /> : <TsFileIcon size={14} />}
@@ -116,10 +135,15 @@ export default function CommandPalette({ commands, onOpenFile, onClose }: Props)
             commandResults.map((cmd, i) => (
               <button
                 key={cmd.id}
+                id={`palette-option-${i}`}
+                role="option"
+                aria-selected={i === index}
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => pick(i)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 text-left text-[13px] ${
-                  i === index ? 'bg-[#04395e] text-white' : 'text-[var(--vs-text)]'
+                  i === index
+                    ? 'bg-[var(--vs-palette-selected-bg)] text-[var(--vs-palette-selected-text)]'
+                    : 'text-[var(--vs-text)]'
                 }`}
               >
                 <span className="text-[var(--vs-keyword)]">❯</span>

@@ -30,7 +30,7 @@ export default function Sidebar({ activeId, openIds, onOpen, onCloseTab }: Props
         </button>
 
         {editorsOpen && (
-          <div className="mb-1">
+          <div className="mb-1" role="group" aria-label="Open editors">
             {openIds.map((id) => {
               const file = FILES.find((f) => f.id === id)
               if (!file) return null
@@ -40,7 +40,7 @@ export default function Sidebar({ activeId, openIds, onOpen, onCloseTab }: Props
                   key={id}
                   onClick={() => onOpen(id)}
                   className={`group w-full flex items-center gap-2 pl-6 pr-2 py-[3px] text-left italic transition-colors duration-150 ${
-                    active ? 'bg-[#37373d] text-white' : 'text-[var(--vs-text)] hover:bg-[var(--vs-hover)]'
+                    active ? 'bg-[var(--vs-sidebar-active-bg)] text-[var(--vs-sidebar-active-text)]' : 'text-[var(--vs-text)] hover:bg-[var(--vs-hover)]'
                   }`}
                 >
                   {file.language === 'json' ? <JsonFileIcon size={13} /> : <TsFileIcon size={13} />}
@@ -72,36 +72,42 @@ export default function Sidebar({ activeId, openIds, onOpen, onCloseTab }: Props
           <span>KASAM-PORTFOLIO</span>
         </div>
 
-        <button
-          onClick={() => setSrcOpen((v) => !v)}
-          className="w-full flex items-center gap-1 pl-4 pr-2 py-1 hover:bg-[var(--vs-hover)] text-[var(--vs-text)] transition-colors duration-150"
-        >
-          {srcOpen ? <ChevronDownIcon size={12} /> : <ChevronRightIcon size={12} />}
-          <FolderIcon size={15} open={srcOpen} />
-          <span>src</span>
-        </button>
+        <div role="tree" aria-label="src">
+          <button
+            role="treeitem"
+            aria-expanded={srcOpen}
+            onClick={() => setSrcOpen((v) => !v)}
+            className="w-full flex items-center gap-1 pl-4 pr-2 py-1 hover:bg-[var(--vs-hover)] text-[var(--vs-text)] transition-colors duration-150"
+          >
+            {srcOpen ? <ChevronDownIcon size={12} /> : <ChevronRightIcon size={12} />}
+            <FolderIcon size={15} open={srcOpen} />
+            <span>src</span>
+          </button>
 
-        {srcOpen && (
-          <div>
-            {FILES.map((file) => {
-              const active = file.id === activeId
-              return (
-                <button
-                  key={file.id}
-                  onClick={() => onOpen(file.id)}
-                  className={`w-full flex items-center gap-2 pl-9 pr-2 py-1 text-left transition-colors duration-150 ${
-                    active
-                      ? 'bg-[#37373d] text-white'
-                      : 'text-[var(--vs-text)] hover:bg-[var(--vs-hover)]'
-                  }`}
-                >
-                  {file.language === 'json' ? <JsonFileIcon size={14} /> : <TsFileIcon size={14} />}
-                  <span className="truncate">{file.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
+          {srcOpen && (
+            <div role="group">
+              {FILES.map((file) => {
+                const active = file.id === activeId
+                return (
+                  <button
+                    key={file.id}
+                    role="treeitem"
+                    aria-selected={active}
+                    onClick={() => onOpen(file.id)}
+                    className={`w-full flex items-center gap-2 pl-9 pr-2 py-1 text-left transition-colors duration-150 ${
+                      active
+                        ? 'bg-[var(--vs-sidebar-active-bg)] text-[var(--vs-sidebar-active-text)]'
+                        : 'text-[var(--vs-text)] hover:bg-[var(--vs-hover)]'
+                    }`}
+                  >
+                    {file.language === 'json' ? <JsonFileIcon size={14} /> : <TsFileIcon size={14} />}
+                    <span className="truncate">{file.name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

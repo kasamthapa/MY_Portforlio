@@ -34,6 +34,63 @@
   --vs-accent-bright: #3794ff;
   --vs-ts: #3178c6;
   --vs-json: #cbcb41;
+
+  --vs-tab-active-text: #ffffff;
+  --vs-sidebar-active-bg: #37373d;
+  --vs-sidebar-active-text: #ffffff;
+  --vs-palette-bg: #252526;
+  --vs-palette-header-bg: #1e1e1e;
+  --vs-palette-selected-bg: #04395e;
+  --vs-palette-selected-text: #ffffff;
+  --vs-hero-grad-start: #ffffff;
+  --vs-hero-grad-end: #9cdcfe;
+  --vs-glow: #3794ff;
+}
+
+/* ============================================================
+   PALETTE — VS Code Light+ (toggle via the command palette or
+   the theme button in the status bar)
+   ============================================================ */
+:root[data-theme='light'] {
+  --vs-bg: #ffffff;
+  --vs-sidebar: #f3f3f3;
+  --vs-activity: #333333;
+  --vs-titlebar: #dddddd;
+  --vs-tab-active: #ffffff;
+  --vs-tab-inactive: #ececec;
+  --vs-border: #e5e5e5;
+  --vs-panel-border: #d4d4d4;
+  --vs-text: #1e1e1e;
+  --vs-muted: #6e6e6e;
+  --vs-linenum: #237893;
+  --vs-selection: #add6ff;
+  --vs-hover: #e8e8e8;
+
+  --vs-comment: #008000;
+  --vs-keyword: #0000ff;
+  --vs-string: #a31515;
+  --vs-func: #795e26;
+  --vs-type: #267f99;
+  --vs-number: #098658;
+  --vs-variable: #001080;
+  --vs-punct: #1e1e1e;
+  --vs-tag: #800000;
+
+  --vs-accent: #007acc;
+  --vs-accent-bright: #0066b8;
+  --vs-ts: #3178c6;
+  --vs-json: #b89b0e;
+
+  --vs-tab-active-text: #1e1e1e;
+  --vs-sidebar-active-bg: #e4e6f1;
+  --vs-sidebar-active-text: #1e1e1e;
+  --vs-palette-bg: #ffffff;
+  --vs-palette-header-bg: #f3f3f3;
+  --vs-palette-selected-bg: #add6ff;
+  --vs-palette-selected-text: #1e1e1e;
+  --vs-hero-grad-start: #1e1e1e;
+  --vs-hero-grad-end: #0066b8;
+  --vs-glow: #0066b8;
 }
 
 * {
@@ -157,4 +214,39 @@ body {
 .portrait-bit {
   position: absolute;
   animation: portraitFadeIn 0.6s ease both;
+}
+
+/* ============================================================
+   REDUCED MOTION — respect the OS-level preference: cut every
+   animation/transition down to effectively instant.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   SKIP LINK — hidden until keyboard-focused
+   ============================================================ */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 200;
+  background: var(--vs-accent-bright);
+  color: #001b33;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 6px 6px;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0;
 }

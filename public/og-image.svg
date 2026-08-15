@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="Menlo, Consolas, monospace">
+  <defs>
+    <radialGradient id="glow" cx="60%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#3794ff" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#3794ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="nameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="30%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#9cdcfe" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#1e1e1e" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <!-- title bar -->
+  <rect width="1200" height="40" fill="#3c3c3c" />
+  <circle cx="26" cy="20" r="6" fill="#ff5f56" />
+  <circle cx="46" cy="20" r="6" fill="#ffbd2e" />
+  <circle cx="66" cy="20" r="6" fill="#27c93f" />
+  <text x="90" y="25" font-size="12" fill="#a0a0a0">kasam-portfolio</text>
+
+  <!-- decorative sidebar strip -->
+  <g opacity="0.45">
+    <rect x="0" y="40" width="180" height="590" fill="#252526" />
+    <rect x="0" y="40" width="36" height="590" fill="#333333" />
+  </g>
+
+  <!-- main content — kept well within the top ~60% of the canvas since the
+       thumbnail renderer used to rasterize this (qlmanage) scales content up
+       and hard-clips at the canvas edge; see scripts/generate-og-image.sh -->
+  <g>
+    <text x="80" y="110" font-size="16" fill="#5c9c53">~/kasam $ whoami</text>
+
+    <text x="80" y="175" font-size="34" font-weight="700" fill="url(#nameGrad)">Kasam Thapa Magar</text>
+
+    <text x="80" y="213" font-size="17" fill="#9a9a9a">Full stack developer from Kathmandu.</text>
+    <text x="80" y="237" font-size="17" fill="#9a9a9a">Building AI developer tools.</text>
+
+    <g font-size="14" fill="#5c9c53">
+      <text x="80" y="292">$ git log --oneline</text>
+    </g>
+    <g font-size="12.5">
+      <text x="80" y="315"><tspan fill="#b5cea8">a3f9c12</tspan><tspan fill="#c9c9c9"> shipped codebrain — RAG over any repo</tspan></text>
+    </g>
+
+    <g font-size="13" fill="#3794ff">
+      <rect x="80" y="342" width="76" height="28" rx="4" fill="none" stroke="#3794ff" stroke-width="1.5" />
+      <text x="118" y="360" text-anchor="middle">GitHub</text>
+      <rect x="168" y="342" width="90" height="28" rx="4" fill="none" stroke="#3794ff" stroke-width="1.5" />
+      <text x="213" y="360" text-anchor="middle">LinkedIn</text>
+    </g>
+  </g>
+</svg>

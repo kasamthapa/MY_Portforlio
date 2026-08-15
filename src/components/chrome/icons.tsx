@@ -146,6 +146,23 @@ export function ZenIcon({ className, size = 12 }: IconProps) {
   )
 }
 
+export function SunIcon({ className, size = 12 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <circle cx="8" cy="8" r="3.2" />
+      <path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" />
+    </svg>
+  )
+}
+
+export function MoonIcon({ className, size = 12 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M13 9.3A5.3 5.3 0 1 1 6.7 3a4.2 4.2 0 0 0 6.3 6.3z" />
+    </svg>
+  )
+}
+
 export function CheckIcon({ className, size = 12 }: IconProps) {
   return (
     <svg {...base(size)} className={className}>

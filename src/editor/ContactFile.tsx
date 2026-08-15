@@ -51,7 +51,7 @@ function Preview() {
             href={row.href}
             target={row.label === 'email' ? undefined : '_blank'}
             rel="noopener noreferrer"
-            className="w-fit text-[var(--vs-text)] hover:text-[#3794ff] hover:underline underline-offset-4"
+            className="w-fit text-[var(--vs-text)] hover:text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
           >
             {row.display}
           </a>

@@ -1,13 +1,32 @@
-import { GitBranchIconLarge, SyncIcon, BellIcon, TerminalIconGlyph, ErrorIcon, WarningIcon, ZenIcon } from './icons'
+import {
+  GitBranchIconLarge,
+  SyncIcon,
+  BellIcon,
+  TerminalIconGlyph,
+  ErrorIcon,
+  WarningIcon,
+  ZenIcon,
+  SunIcon,
+  MoonIcon,
+} from './icons'
 
 interface Props {
   language: string
   terminalOpen: boolean
+  theme: 'dark' | 'light'
   onToggleTerminal: () => void
   onToggleZen: () => void
+  onToggleTheme: () => void
 }
 
-export default function StatusBar({ language, terminalOpen, onToggleTerminal, onToggleZen }: Props) {
+export default function StatusBar({
+  language,
+  terminalOpen,
+  theme,
+  onToggleTerminal,
+  onToggleZen,
+  onToggleTheme,
+}: Props) {
   return (
     <div className="h-6 shrink-0 flex items-center justify-between bg-[var(--vs-accent)] text-white text-[11px] px-2 select-none">
       <div className="flex items-center gap-3 min-w-0">
@@ -27,6 +46,13 @@ export default function StatusBar({ language, terminalOpen, onToggleTerminal, on
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
+        <button
+          onClick={onToggleTheme}
+          className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/15"
+          title={theme === 'dark' ? 'Switch to Light+ Theme' : 'Switch to Dark+ Theme'}
+        >
+          {theme === 'dark' ? <MoonIcon size={12} /> : <SunIcon size={12} />}
+        </button>
         <button
           onClick={onToggleZen}
           className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/15"
