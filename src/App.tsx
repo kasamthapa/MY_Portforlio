@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import TitleBar from './components/chrome/TitleBar'
 import ActivityBar from './components/chrome/ActivityBar'
 import Sidebar from './components/chrome/Sidebar'
@@ -14,7 +13,6 @@ import { FILES, DEFAULT_FILE_ID } from './editor/registry'
 const EASE = 'cubic-bezier(0.16,1,0.3,1)'
 
 export default function App() {
-  const navigate = useNavigate()
   const [activeId, setActiveId] = useState(DEFAULT_FILE_ID)
   const [openIds, setOpenIds] = useState([DEFAULT_FILE_ID])
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -60,12 +58,6 @@ export default function App() {
   const commands: Command[] = useMemo(
     () => [
       {
-        id: 'cinematic',
-        label: 'View: Enter Cinematic Mode ✦',
-        detail: 'New',
-        run: () => navigate('/cinematic'),
-      },
-      {
         id: 'zen',
         label: zenMode ? 'View: Exit Zen Mode' : 'View: Toggle Zen Mode',
         detail: 'Esc',
@@ -97,7 +89,7 @@ export default function App() {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [zenMode, terminalOpen, theme, navigate]
+    [zenMode, terminalOpen, theme]
   )
 
   useEffect(() => {
