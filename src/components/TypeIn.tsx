@@ -6,6 +6,9 @@ interface Props {
   cursor?: boolean
   trailingCursor?: boolean
   className?: string
+  /** Explicit cursor color — needed when the parent uses a gradient/transparent text fill,
+   *  since the cursor would otherwise inherit that (invisible) color. */
+  cursorColor?: string
   onDone?: () => void
 }
 
@@ -15,6 +18,7 @@ export default function TypeIn({
   cursor = false,
   trailingCursor = false,
   className,
+  cursorColor,
   onDone,
 }: Props) {
   const [count, setCount] = useState(0)
@@ -35,7 +39,11 @@ export default function TypeIn({
   return (
     <span className={className}>
       {text.slice(0, count)}
-      {showCursor && <span className="animate-blink">▌</span>}
+      {showCursor && (
+        <span className="animate-caret" style={cursorColor ? { color: cursorColor } : undefined}>
+          ▌
+        </span>
+      )}
     </span>
   )
 }

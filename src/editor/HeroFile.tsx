@@ -102,8 +102,13 @@ function Preview() {
             <TypeIn text="~/kasam $ whoami" speed={35} cursor onDone={() => setStep(1)} />
           </p>
 
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] text-[var(--vs-text)]">
-            {step >= 1 && <TypeIn text="Kasam Thapa Magar" speed={45} cursor onDone={() => setStep(2)} />}
+          <h1
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] bg-clip-text text-transparent"
+            style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 30%, #9cdcfe 100%)' }}
+          >
+            {step >= 1 && (
+              <TypeIn text="Kasam Thapa Magar" speed={45} cursor cursorColor="#9cdcfe" onDone={() => setStep(2)} />
+            )}
           </h1>
 
           <p className="text-[var(--vs-muted)] text-sm md:text-base max-w-lg mb-6 min-h-[1.6em]">
@@ -164,6 +169,10 @@ function Preview() {
         </div>
 
         <div className="hidden lg:block relative shrink-0" style={{ width: 260, height: 260 }} aria-hidden="true">
+          <div
+            className="absolute inset-0 rounded-full blur-3xl opacity-25 -z-10"
+            style={{ background: 'radial-gradient(circle, #3794ff, transparent 65%)' }}
+          />
           {step >= 3 &&
             PORTRAIT_BITS.map((bit, i) => (
               <span

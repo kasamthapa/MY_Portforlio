@@ -20,7 +20,7 @@ export default function Tabs({ openIds, activeId, onSelect, onClose }: Props) {
           <button
             key={id}
             onClick={() => onSelect(id)}
-            className={`group shrink-0 flex items-center gap-2 pl-3 pr-2 h-full text-[13px] border-r border-[var(--vs-border)] ${
+            className={`group shrink-0 flex items-center gap-2 pl-3 pr-2 h-full text-[13px] border-r border-[var(--vs-border)] transition-colors duration-150 ${
               active
                 ? 'bg-[var(--vs-tab-active)] text-white border-t-2 border-t-[#3794ff]'
                 : 'bg-[var(--vs-tab-inactive)] text-[var(--vs-muted)] border-t-2 border-t-transparent hover:text-[var(--vs-text)]'

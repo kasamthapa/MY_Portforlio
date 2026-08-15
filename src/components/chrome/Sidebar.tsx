@@ -24,7 +24,7 @@ export default function Sidebar({ activeId, onOpen }: Props) {
 
         <button
           onClick={() => setSrcOpen((v) => !v)}
-          className="w-full flex items-center gap-1 pl-4 pr-2 py-1 hover:bg-[var(--vs-hover)] text-[var(--vs-text)]"
+          className="w-full flex items-center gap-1 pl-4 pr-2 py-1 hover:bg-[var(--vs-hover)] text-[var(--vs-text)] transition-colors duration-150"
         >
           {srcOpen ? <ChevronDownIcon size={12} /> : <ChevronRightIcon size={12} />}
           <FolderIcon size={15} open={srcOpen} />
@@ -39,7 +39,7 @@ export default function Sidebar({ activeId, onOpen }: Props) {
                 <button
                   key={file.id}
                   onClick={() => onOpen(file.id)}
-                  className={`w-full flex items-center gap-2 pl-9 pr-2 py-1 text-left ${
+                  className={`w-full flex items-center gap-2 pl-9 pr-2 py-1 text-left transition-colors duration-150 ${
                     active
                       ? 'bg-[#37373d] text-white'
                       : 'text-[var(--vs-text)] hover:bg-[var(--vs-hover)]'
