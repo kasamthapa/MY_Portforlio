@@ -86,7 +86,7 @@ export default function App() {
 
         {/* desktop sidebar */}
         <div className="hidden lg:block w-60 shrink-0 border-r border-black/40">
-          <Sidebar activeId={activeId} onOpen={openFile} />
+          <Sidebar activeId={activeId} openIds={openIds} onOpen={openFile} onCloseTab={closeTab} />
         </div>
 
         {/* mobile sidebar drawer */}
@@ -97,7 +97,7 @@ export default function App() {
               onClick={() => setSidebarOpen(false)}
             />
             <div className="lg:hidden fixed top-9 left-0 bottom-0 w-64 z-50 border-r border-black/40 shadow-[8px_0_30px_-10px_rgba(0,0,0,0.6)] animate-slide-in-left">
-              <Sidebar activeId={activeId} onOpen={openFile} />
+              <Sidebar activeId={activeId} openIds={openIds} onOpen={openFile} onCloseTab={closeTab} />
             </div>
           </>
         )}

@@ -1,4 +1,4 @@
-import { GitBranchIconLarge, SyncIcon, BellIcon, TerminalIconGlyph } from './icons'
+import { GitBranchIconLarge, SyncIcon, BellIcon, TerminalIconGlyph, ErrorIcon, WarningIcon } from './icons'
 
 interface Props {
   language: string
@@ -15,9 +15,13 @@ export default function StatusBar({ language, terminalOpen, onToggleTerminal }: 
           main
         </span>
         <SyncIcon size={11} className="hidden sm:block" />
-        <span className="hidden sm:flex items-center gap-2">
-          <span>0 ⓧ</span>
-          <span>0 ⚠</span>
+        <span className="hidden sm:flex items-center gap-2.5">
+          <span className="flex items-center gap-1">
+            <ErrorIcon size={12} />0
+          </span>
+          <span className="flex items-center gap-1">
+            <WarningIcon size={12} />0
+          </span>
         </span>
       </div>
 
