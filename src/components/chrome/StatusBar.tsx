@@ -1,12 +1,13 @@
-import { GitBranchIconLarge, SyncIcon, BellIcon, TerminalIconGlyph, ErrorIcon, WarningIcon } from './icons'
+import { GitBranchIconLarge, SyncIcon, BellIcon, TerminalIconGlyph, ErrorIcon, WarningIcon, ZenIcon } from './icons'
 
 interface Props {
   language: string
   terminalOpen: boolean
   onToggleTerminal: () => void
+  onToggleZen: () => void
 }
 
-export default function StatusBar({ language, terminalOpen, onToggleTerminal }: Props) {
+export default function StatusBar({ language, terminalOpen, onToggleTerminal, onToggleZen }: Props) {
   return (
     <div className="h-6 shrink-0 flex items-center justify-between bg-[var(--vs-accent)] text-white text-[11px] px-2 select-none">
       <div className="flex items-center gap-3 min-w-0">
@@ -26,6 +27,13 @@ export default function StatusBar({ language, terminalOpen, onToggleTerminal }: 
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
+        <button
+          onClick={onToggleZen}
+          className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/15"
+          title="Toggle Zen Mode"
+        >
+          <ZenIcon size={12} />
+        </button>
         <button
           onClick={onToggleTerminal}
           className={`flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/15 ${

@@ -91,6 +91,33 @@ function Code() {
   )
 }
 
+const SUGGESTIONS = [
+  { kind: 'M', color: '#b180d7', text: 'hire(): Promise<Yes>' },
+  { kind: 'F', color: '#75beff', text: 'role: "Full Stack Developer"' },
+  { kind: 'P', color: '#ee9d28', text: 'availability: "open"' },
+]
+
+function IntelliSense() {
+  return (
+    <div
+      className="not-italic font-normal absolute left-0 top-full mt-1 w-72 max-w-[80vw] rounded-md border border-[var(--vs-panel-border)] bg-[#252526] shadow-2xl overflow-hidden z-10 animate-suggest-in text-[12px] normal-case tracking-normal"
+      aria-hidden="true"
+    >
+      {SUGGESTIONS.map((item, i) => (
+        <div key={item.text} className={`flex items-center gap-2 px-2 py-1.5 ${i === 0 ? 'bg-[#04395e]' : ''}`}>
+          <span
+            className="w-4 h-4 rounded-sm flex items-center justify-center text-[10px] font-bold shrink-0"
+            style={{ background: `${item.color}33`, color: item.color }}
+          >
+            {item.kind}
+          </span>
+          <span className="text-[var(--vs-text)] truncate">{item.text}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Preview() {
   const [step, setStep] = useState(0)
 
@@ -103,12 +130,13 @@ function Preview() {
           </p>
 
           <h1
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] bg-clip-text text-transparent"
+            className="relative text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] bg-clip-text text-transparent"
             style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 30%, #9cdcfe 100%)' }}
           >
             {step >= 1 && (
               <TypeIn text="Kasam Thapa Magar" speed={45} cursor cursorColor="#9cdcfe" onDone={() => setStep(2)} />
             )}
+            {step === 1 && <IntelliSense />}
           </h1>
 
           <p className="text-[var(--vs-muted)] text-sm md:text-base max-w-lg mb-6 min-h-[1.6em]">

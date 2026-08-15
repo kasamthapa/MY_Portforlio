@@ -135,6 +135,17 @@ export function ErrorIcon({ className, size = 12 }: IconProps) {
   )
 }
 
+export function ZenIcon({ className, size = 12 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M2 5.5V2h3.5" />
+      <path d="M14 5.5V2h-3.5" />
+      <path d="M2 10.5V14h3.5" />
+      <path d="M14 10.5V14h-3.5" />
+    </svg>
+  )
+}
+
 export function CheckIcon({ className, size = 12 }: IconProps) {
   return (
     <svg {...base(size)} className={className}>
