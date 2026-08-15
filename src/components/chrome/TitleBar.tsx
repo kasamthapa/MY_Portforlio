@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { FilesIcon, SearchIcon } from './icons'
 
 interface Props {
@@ -34,7 +35,14 @@ export default function TitleBar({ onMenuClick, onQuickOpen }: Props) {
         <span className="sm:hidden truncate">kasam-portfolio</span>
       </div>
 
-      <div className="w-24 lg:w-28" aria-hidden="true" />
+      <div className="w-24 lg:w-28 flex justify-end">
+        <Link
+          to="/cinematic"
+          className="text-[10px] px-2 py-0.5 rounded-full border border-[var(--vs-accent-bright)]/40 text-[var(--vs-accent-bright)] hover:bg-[var(--vs-accent-bright)]/10 transition-colors whitespace-nowrap"
+        >
+          ✦ Cinematic
+        </Link>
+      </div>
     </div>
   )
 }

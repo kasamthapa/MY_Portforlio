@@ -93,6 +93,25 @@
   --vs-glow: #0066b8;
 }
 
+/* ============================================================
+   PALETTE — Cinematic mode (/cinematic): an editorial, motion-led
+   sibling experience to the VS Code shell. Independent token set —
+   deliberately not theme-switched with the IDE's dark/light mode.
+   ============================================================ */
+:root {
+  --cn-bg: #050505;
+  --cn-bg-soft: #0b0b0a;
+  --cn-surface: #101010;
+  --cn-text: #f3f1ea;
+  --cn-muted: #8f8c85;
+  --cn-faint: #56534c;
+  --cn-accent: #8fd67a;
+  --cn-accent-2: #ff6b4a;
+  --cn-border: rgba(243, 241, 234, 0.1);
+  --cn-display: 'Space Grotesk', 'JetBrains Mono', sans-serif;
+  --cn-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -100,9 +119,13 @@
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
+/* The VS Code shell is a fixed-viewport app (its own height: 100dvh via .vscode-shell), so the
+   page itself shouldn't scroll or grow. The cinematic route is a tall, naturally scrolling page —
+   CinematicApp flips these back to visible/auto on mount. */
 body {
   background-color: var(--vs-bg);
   color: var(--vs-text);
@@ -249,4 +272,97 @@ body {
 
 .skip-link:focus {
   top: 0;
+}
+
+/* ============================================================
+   CINEMATIC MODE — editorial page, independent of the IDE shell
+   ============================================================ */
+.cinematic-root {
+  background: var(--cn-bg);
+  color: var(--cn-text);
+  font-family: var(--cn-mono);
+  min-height: 100%;
+  position: relative;
+  cursor: none;
+}
+
+@media (max-width: 860px), (hover: none) {
+  .cinematic-root {
+    cursor: auto;
+  }
+}
+
+.cn-display {
+  font-family: var(--cn-display);
+}
+
+.cn-grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.cn-cursor-dot,
+.cn-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.cn-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--cn-accent);
+}
+
+.cn-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--cn-accent);
+  opacity: 0.6;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease, border-color 0.25s ease;
+}
+
+.cn-cursor-ring.is-active {
+  width: 56px;
+  height: 56px;
+  opacity: 1;
+  border-color: var(--cn-accent-2);
+}
+
+.cn-split-line {
+  overflow: hidden;
+  display: block;
+}
+
+.cn-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: cnMarquee 28s linear infinite;
+}
+
+@keyframes cnMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.cinematic-root ::-webkit-scrollbar {
+  width: 10px;
+}
+.cinematic-root ::-webkit-scrollbar-track {
+  background: var(--cn-bg);
+}
+.cinematic-root ::-webkit-scrollbar-thumb {
+  background: var(--cn-faint);
+  border-radius: 5px;
 }
