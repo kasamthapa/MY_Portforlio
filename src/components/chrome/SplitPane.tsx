@@ -107,7 +107,7 @@ export default function SplitPane({ code, preview, previewLabel = 'Preview' }: P
         <Minimap seed={seedFrom(previewLabel)} />
       </div>
 
-      {/* draggable divider */}
+      {/* draggable divider — a visible grip handle, not just an invisible hit-area */}
       <div
         role="separator"
         aria-orientation="vertical"
@@ -118,11 +118,28 @@ export default function SplitPane({ code, preview, previewLabel = 'Preview' }: P
         tabIndex={0}
         onMouseDown={startDrag}
         onKeyDown={onDividerKeyDown}
-        className={`hidden lg:block w-1 shrink-0 cursor-col-resize relative group focus:outline-none ${
+        className={`hidden lg:flex items-center justify-center w-1 shrink-0 cursor-col-resize relative group focus:outline-none ${
           dragging ? 'bg-[var(--vs-accent-bright)]' : 'bg-[var(--vs-border)]'
         }`}
       >
         <div className="absolute inset-y-0 -left-1 -right-1 group-hover:bg-[var(--vs-accent-bright)]/40" />
+        <div
+          className={`absolute flex flex-col items-center gap-1 py-2 px-0.5 rounded-full border transition-colors ${
+            dragging
+              ? 'border-[var(--vs-accent-bright)] bg-[var(--vs-accent-bright)]'
+              : 'border-[var(--vs-panel-border)] bg-[var(--vs-tab-inactive)] group-hover:border-[var(--vs-accent-bright)]'
+          }`}
+        >
+          <span
+            className={`w-0.5 h-0.5 rounded-full ${dragging ? 'bg-white' : 'bg-[var(--vs-muted)]'}`}
+          />
+          <span
+            className={`w-0.5 h-0.5 rounded-full ${dragging ? 'bg-white' : 'bg-[var(--vs-muted)]'}`}
+          />
+          <span
+            className={`w-0.5 h-0.5 rounded-full ${dragging ? 'bg-white' : 'bg-[var(--vs-muted)]'}`}
+          />
+        </div>
       </div>
 
       <div
