@@ -6,13 +6,13 @@ import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBit
 const LINKS = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/kasamthapamagar' },
-  { label: 'X', href: 'https://twitter.com/kasamthapa89' },
+  { label: 'X', href: 'https://x.com/kasamthapa89' },
 ]
 
 const GIT_LOG = [
-  { hash: 'a3f9c12', msg: 'shipped codebrain — RAG pipeline over any GitHub repo' },
-  { hash: 'b2e1d07', msg: 'shipped critch — peer review platform for developers' },
-  { hash: 'c8f3a91', msg: 'learning DSA daily · building in public' },
+  { hash: 'a3f9c12', msg: 'codebrain · ask questions across a codebase with citations' },
+  { hash: 'b2e1d07', msg: 'critch · structured peer reviews for developer projects' },
+  { hash: 'c8f3a91', msg: 'building useful products · Kathmandu, Nepal' },
 ]
 
 function Code() {
@@ -153,7 +153,7 @@ function Preview() {
           <p className="text-[var(--vs-muted)] text-sm md:text-base max-w-lg mb-6 min-h-[1.6em]">
             {step >= 2 && (
               <TypeIn
-                text="Full stack developer from Kathmandu. Building AI developer tools."
+                text="I build thoughtful full-stack products, from developer tools to AI-powered systems."
                 speed={14}
                 cursor
                 onDone={() => setStep(3)}
