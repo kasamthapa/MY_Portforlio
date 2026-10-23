@@ -1,54 +1,66 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="Menlo, Consolas, monospace">
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="glow" cx="60%" cy="0%" r="70%">
-      <stop offset="0%" stop-color="#3794ff" stop-opacity="0.22" />
-      <stop offset="100%" stop-color="#3794ff" stop-opacity="0" />
+    <linearGradient id="glass" x1="92" y1="74" x2="1100" y2="610" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#252623"/>
+      <stop offset=".52" stop-color="#151615"/>
+      <stop offset="1" stop-color="#101111"/>
+    </linearGradient>
+    <radialGradient id="screenGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(652 330) rotate(90) scale(300 520)">
+      <stop stop-color="#C8C1A6" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#C8C1A6" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="nameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="30%" stop-color="#ffffff" />
-      <stop offset="100%" stop-color="#9cdcfe" />
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M0 .5H4" stroke="#F0EEE4" stroke-opacity=".075"/>
+    </pattern>
+    <linearGradient id="paper" x1="831" y1="190" x2="1044" y2="519" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D9D6C9"/>
+      <stop offset="1" stop-color="#928F83"/>
     </linearGradient>
   </defs>
+  <path fill="#050606" d="M0 0h1200v630H0z"/>
+  <rect x="18" y="18" width="1164" height="594" rx="26" fill="url(#glass)" stroke="#65645C" stroke-opacity=".65"/>
+  <rect x="18" y="18" width="1164" height="594" rx="26" fill="url(#screenGlow)"/>
+  <rect x="18" y="18" width="1164" height="594" rx="26" fill="url(#scan)"/>
+  <path d="M19 80h1162" stroke="#F0EEE4" stroke-opacity=".15"/>
+  <circle cx="48" cy="49" r="7" fill="#E2756B"/>
+  <circle cx="71" cy="49" r="7" fill="#DFB85F"/>
+  <circle cx="94" cy="49" r="7" fill="#72A874"/>
+  <circle cx="129" cy="49" r="14" stroke="#DCD9CE" stroke-opacity=".5"/>
+  <text x="129" y="55" text-anchor="middle" fill="#E9E6DC" font-family="Georgia,serif" font-size="17">K.</text>
+  <text x="157" y="46" fill="#F0EEE5" font-family="Arial,sans-serif" font-size="13" font-weight="600">KASAM THAPA MAGAR</text>
+  <text x="157" y="62" fill="#96958B" font-family="monospace" font-size="9" letter-spacing="1.2">DEVELOPER · KATHMANDU, NEPAL</text>
+  <rect x="469" y="33" width="345" height="31" rx="8" fill="#111212" stroke="#626158" stroke-opacity=".45"/>
+  <text x="641" y="53" text-anchor="middle" fill="#C4C1B5" font-family="monospace" font-size="10" letter-spacing=".8">kasamthapa.com  /  SELECTED WORK</text>
+  <text x="1065" y="52" text-anchor="end" fill="#C8C1A6" font-family="monospace" font-size="9" letter-spacing="1.4">27° 43′ N  ·  KTM</text>
 
-  <rect width="1200" height="630" fill="#1e1e1e" />
-  <rect width="1200" height="630" fill="url(#glow)" />
+  <text x="92" y="143" fill="#A4A197" font-family="monospace" font-size="10" letter-spacing="2.4">INDEPENDENT DEVELOPER  /  SOFTWARE WITH A HUMAN POINT OF VIEW</text>
+  <text x="91" y="248" fill="#EEECE3" font-family="Georgia,serif" font-size="82" letter-spacing="-4">I make the</text>
+  <text x="91" y="338" fill="#C8C1A6" font-family="Georgia,serif" font-size="88" font-style="italic" letter-spacing="-4">complex</text>
+  <text x="91" y="428" fill="#EEECE3" font-family="Georgia,serif" font-size="82" letter-spacing="-4">feel clear.</text>
+  <text x="96" y="471" fill="#B4B2A8" font-family="Arial,sans-serif" font-size="16">Thoughtful tools for people finding their way through code and education.</text>
 
-  <!-- title bar -->
-  <rect width="1200" height="40" fill="#3c3c3c" />
-  <circle cx="26" cy="20" r="6" fill="#ff5f56" />
-  <circle cx="46" cy="20" r="6" fill="#ffbd2e" />
-  <circle cx="66" cy="20" r="6" fill="#27c93f" />
-  <text x="90" y="25" font-size="12" fill="#a0a0a0">kasam-portfolio</text>
-
-  <!-- decorative sidebar strip -->
-  <g opacity="0.45">
-    <rect x="0" y="40" width="180" height="590" fill="#252526" />
-    <rect x="0" y="40" width="36" height="590" fill="#333333" />
+  <g transform="translate(865 132) rotate(2 112 194)">
+    <rect width="218" height="336" fill="url(#paper)" stroke="#EEECE3" stroke-opacity=".8"/>
+    <rect x="9" y="9" width="200" height="318" fill="#171817" stroke="#77766B"/>
+    <text x="21" y="31" fill="#D0CBB7" font-family="monospace" font-size="8" letter-spacing="1.1">KASAM / KTM  ·  01</text>
+    <text x="109" y="148" text-anchor="middle" fill="#D6D1C0" fill-opacity=".72" font-family="Georgia,serif" font-size="66" letter-spacing="-5">KASAM</text>
+    <path d="M35 204h148M35 213h124M35 222h139M35 231h91" stroke="#C7C5BA" stroke-opacity=".16"/>
+    <path d="M41 182c15-23 26-28 39-27 9 1 12 8 15 14 6-9 15-14 25-12 10 2 18 13 21 24l12 30H32l9-29Z" fill="#AAA99F" fill-opacity=".58"/>
+    <circle cx="102" cy="130" r="30" fill="#AAA99F" fill-opacity=".65"/>
+    <rect x="20" y="285" width="177" height="1" fill="#AAA99F" fill-opacity=".38"/>
+    <text x="21" y="306" fill="#C8C1A6" font-family="monospace" font-size="7" letter-spacing="1">FULL-STACK DEVELOPER</text>
+    <text x="195" y="306" text-anchor="end" fill="#A5A398" font-family="monospace" font-size="7">2026</text>
   </g>
+  <text x="858" y="501" fill="#9D9B91" font-family="monospace" font-size="9" letter-spacing="1.6">BUILT IN KATHMANDU</text>
 
-  <!-- main content — kept well within the top ~60% of the canvas since the
-       thumbnail renderer used to rasterize this (qlmanage) scales content up
-       and hard-clips at the canvas edge; see scripts/generate-og-image.sh -->
-  <g>
-    <text x="80" y="110" font-size="16" fill="#5c9c53">~/kasam $ whoami</text>
-
-    <text x="80" y="175" font-size="34" font-weight="700" fill="url(#nameGrad)">Kasam Thapa Magar</text>
-
-    <text x="80" y="213" font-size="17" fill="#9a9a9a">Building products that make complex things feel simple.</text>
-    <text x="80" y="237" font-size="17" fill="#9a9a9a">CodeBrain · SikshyaNepal · Kathmandu, Nepal</text>
-
-    <g font-size="14" fill="#5c9c53">
-      <text x="80" y="292">$ portfolio --featured</text>
-    </g>
-    <g font-size="12.5">
-      <text x="80" y="315"><tspan fill="#b5cea8">CodeBrain</tspan><tspan fill="#c9c9c9"> — repo-grounded answers with citations</tspan></text>
-    </g>
-
-    <g font-size="13" fill="#3794ff">
-      <rect x="80" y="342" width="76" height="28" rx="4" fill="none" stroke="#3794ff" stroke-width="1.5" />
-      <text x="118" y="360" text-anchor="middle">GitHub</text>
-      <rect x="168" y="342" width="90" height="28" rx="4" fill="none" stroke="#3794ff" stroke-width="1.5" />
-      <text x="213" y="360" text-anchor="middle">LinkedIn</text>
-    </g>
-  </g>
+  <path d="M92 526h1016" stroke="#EEECE3" stroke-opacity=".18"/>
+  <text x="92" y="560" fill="#D9D6CA" font-family="monospace" font-size="10" letter-spacing="1.5">CODEBRAIN</text>
+  <text x="92" y="580" fill="#929188" font-family="Arial,sans-serif" font-size="11">Ask a codebase. Follow the answer to its source.</text>
+  <path d="M431 548v43" stroke="#EEECE3" stroke-opacity=".15"/>
+  <text x="468" y="560" fill="#D9D6CA" font-family="monospace" font-size="10" letter-spacing="1.5">SIKSHYANEPAL</text>
+  <text x="468" y="580" fill="#929188" font-family="Arial,sans-serif" font-size="11">Find a next step after +2.</text>
+  <path d="M762 548v43" stroke="#EEECE3" stroke-opacity=".15"/>
+  <text x="800" y="560" fill="#D9D6CA" font-family="monospace" font-size="10" letter-spacing="1.5">RAPPORTEUR</text>
+  <text x="800" y="580" fill="#929188" font-family="Arial,sans-serif" font-size="11">Meeting notes with source lines.</text>
+  <text x="1108" y="598" text-anchor="end" fill="#B9B5A4" font-family="monospace" font-size="8" letter-spacing="1.2">SCROLL TO EXPLORE  ↓</text>
 </svg>
