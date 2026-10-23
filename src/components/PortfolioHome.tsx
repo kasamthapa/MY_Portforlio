@@ -14,26 +14,72 @@ const sections = [
   { id: 'contact', label: 'Get in touch', number: '03' },
 ]
 
-const codeBrainSteps = [
-  { title: 'Choose a project', detail: 'Pick a public GitHub repository.' },
-  { title: 'Map the code', detail: 'Group TypeScript and JavaScript by structure.' },
-  { title: 'Ask a question', detail: 'Find code related to your question.' },
-  { title: 'Check the answer', detail: 'Open the cited files and lines.' },
-]
-
-const educationSteps = [
-  { number: '01', title: 'Explore', text: 'Find colleges and programs' },
-  { number: '02', title: 'Compare', text: 'Review your options' },
-  { number: '03', title: 'Verify', text: 'Check the official notice' },
-  { number: '04', title: 'Plan', text: 'Save your next step' },
-]
-
-const pipelineNodes = [
-  { title: 'Choose project', note: 'Public GitHub repo', verb: 'READ', icon: '⌘' },
-  { title: 'Map code', note: 'Group related code', verb: 'INDEX', icon: 'lines' },
-  { title: 'Ask question', note: 'Find matching parts', verb: 'ANSWER', icon: '•••' },
-  { title: 'Check sources', note: 'Files + line numbers', verb: '', icon: '[ ↗ ]' },
-]
+type TraceNode = { id: string; label: string; sub: string; x: number; y: number; icon: string }
+type TraceStep = { title: string; detail: string; from: string; to: string; action: string }
+const traces: Record<string, { nodes: TraceNode[]; steps: TraceStep[] }> = {
+  codebrain: {
+    nodes: [
+      { id: 'repo', label: 'GitHub repo', sub: 'public source', x: 10, y: 50, icon: '⌘' },
+      { id: 'parse', label: 'AST parser', sub: 'TS / JS structure', x: 29, y: 25, icon: '{ }' },
+      { id: 'embed', label: 'Embeddings', sub: 'Gemini vectors', x: 48, y: 50, icon: '∿' },
+      { id: 'store', label: 'pgvector', sub: 'code chunks', x: 68, y: 25, icon: '▤' },
+      { id: 'retrieve', label: 'Top 5 match', sub: 'question → chunks', x: 68, y: 75, icon: '⌕' },
+      { id: 'answer', label: 'Answer + source', sub: 'SSE · file · line', x: 90, y: 50, icon: '↗' },
+    ],
+    steps: [
+      { title: 'Start with a repository', detail: 'The user provides a public GitHub URL. CodeBrain fetches the project before attempting to answer anything.', from: 'repo', to: 'parse', action: 'CLONE & WALK' },
+      { title: 'Keep code in meaningful pieces', detail: 'TypeScript and JavaScript syntax is parsed so related code can stay together instead of splitting at arbitrary character counts.', from: 'parse', to: 'embed', action: 'PARSE → EMBED' },
+      { title: 'Index chunks for retrieval', detail: 'Gemini embeddings are saved in PostgreSQL with pgvector, ready to compare against a question.', from: 'embed', to: 'store', action: 'STORE VECTORS' },
+      { title: 'Retrieve the closest context', detail: 'A question is embedded and matched to the five closest code chunks before the answer is generated.', from: 'store', to: 'retrieve', action: 'SIMILARITY SEARCH' },
+      { title: 'Return an answer you can inspect', detail: 'Gemini streams a plain-language response with file and line context, so the reader can open the source and judge it.', from: 'retrieve', to: 'answer', action: 'STREAM + CITE' },
+    ],
+  },
+  sikshyanepal: {
+    nodes: [
+      { id: 'question', label: 'Student question', sub: 'what can I study?', x: 10, y: 50, icon: '?' },
+      { id: 'browse', label: 'Browse', sub: 'colleges & programs', x: 30, y: 25, icon: '⌕' },
+      { id: 'compare', label: 'Compare', sub: 'options side by side', x: 50, y: 50, icon: '⇄' },
+      { id: 'source', label: 'Official notice', sub: 'dates · fees · entry', x: 70, y: 25, icon: '↗' },
+      { id: 'plan', label: 'Next step', sub: 'keep a checklist', x: 90, y: 50, icon: '✓' },
+    ],
+    steps: [
+      { title: 'Begin with a real question', detail: 'A student starts with a subject, location, or the question of what comes after +2.', from: 'question', to: 'browse', action: 'FIND OPTIONS' },
+      { title: 'Discover colleges and programs', detail: 'College and program information is brought into one place so the search has a useful starting point.', from: 'browse', to: 'compare', action: 'NARROW THE FIELD' },
+      { title: 'Compare the shortlist', detail: 'Students can weigh likely-fit programs and keep moving through the research journey.', from: 'compare', to: 'source', action: 'CHECK THE DETAILS' },
+      { title: 'Verify changing details at source', detail: 'Dates, fees, and entry requirements can change. The institution’s original notice remains the authoritative reference.', from: 'source', to: 'plan', action: 'SAVE A NEXT STEP' },
+    ],
+  },
+  critch: {
+    nodes: [
+      { id: 'maker', label: 'Maker', sub: 'shares a project', x: 10, y: 50, icon: '↗' },
+      { id: 'work', label: 'Project page', sub: 'work + context', x: 30, y: 25, icon: '▧' },
+      { id: 'review', label: 'Four lenses', sub: 'idea · UI · code · docs', x: 52, y: 50, icon: '◫' },
+      { id: 'thread', label: 'Review thread', sub: 'comments + replies', x: 73, y: 25, icon: '···' },
+      { id: 'next', label: 'Next iteration', sub: 'actionable feedback', x: 90, y: 50, icon: '↻' },
+    ],
+    steps: [
+      { title: 'Put work in front of people', detail: 'A maker posts a project with enough context for another developer to understand what they are looking at.', from: 'maker', to: 'work', action: 'PUBLISH PROJECT' },
+      { title: 'Make the review specific', detail: 'Reviewers consider the idea, interface, code, and documentation as separate parts of the work.', from: 'work', to: 'review', action: 'RATE FOUR AREAS' },
+      { title: 'Keep the conversation attached', detail: 'Threaded replies let a reviewer clarify a point and the maker respond in the context of that project.', from: 'review', to: 'thread', action: 'DISCUSS THE REVIEW' },
+      { title: 'Turn feedback into a next move', detail: 'The maker can take a concrete improvement into the next iteration. Reputation is tied to giving and receiving feedback.', from: 'thread', to: 'next', action: 'CHOOSE WHAT TO IMPROVE' },
+    ],
+  },
+  rapporteur: {
+    nodes: [
+      { id: 'transcript', label: 'Transcript', sub: 'four input formats', x: 10, y: 50, icon: '≡' },
+      { id: 'lines', label: 'Numbered lines', sub: 'normalize & locate', x: 30, y: 25, icon: '01' },
+      { id: 'agenda', label: 'Agenda + Gemini', sub: 'decisions · actions', x: 52, y: 50, icon: '✳' },
+      { id: 'validate', label: 'Zod + quote check', sub: 'validate exact words', x: 73, y: 25, icon: '✓' },
+      { id: 'receipt', label: 'Jump to receipt', sub: 'claim → source line', x: 90, y: 50, icon: '↗' },
+    ],
+    steps: [
+      { title: 'Bring the transcript in', detail: 'Rapporteur accepts four transcript formats and normalizes the content into addressable lines.', from: 'transcript', to: 'lines', action: 'NORMALIZE INPUT' },
+      { title: 'Give the model an agenda', detail: 'Agenda-aware extraction asks Gemini for decisions and action items grouped under the relevant meeting topics.', from: 'lines', to: 'agenda', action: 'EXTRACT BY TOPIC' },
+      { title: 'Validate structure and wording', detail: 'The response is checked against a Zod schema, with a retry when needed. Each quote is checked against its cited transcript line.', from: 'agenda', to: 'validate', action: 'VALIDATE & MATCH' },
+      { title: 'Let readers inspect the receipt', detail: 'Selecting a claim takes the reader to its source line. An exact quote confirms the words match; it does not prove the interpretation is true.', from: 'validate', to: 'receipt', action: 'OPEN SOURCE LINE' },
+    ],
+  },
+}
 
 const showcaseProjects = [
   { name: 'CodeBrain', kind: 'DEVELOPER TOOLS', note: 'Ask a codebase. Follow the answer to its source.', href: 'https://codebrain-gamma.vercel.app', repo: 'https://github.com/kasamthapa/codebrain', target: 'codebrain', kicker: 'AI CODEBASE GUIDE', problem: 'A new codebase is hard to navigate when you do not know where the useful code lives.', approach: 'Index code by its structure, find relevant passages from a question, and return an answer with file and line citations.', detail: 'The answer is only the beginning: open the cited source to check what the code actually says.', limit: 'Current parsing focuses on TypeScript and JavaScript. The first manual retrieval evaluation exposed a gap that still needs work.', stack: 'React · TypeScript · Express · PostgreSQL · pgvector · Gemini', stages: ['Choose a public repository', 'Map related code', 'Ask in plain language', 'Open cited files and lines'] },
@@ -47,14 +93,14 @@ interface Props {
 }
 
 export default function PortfolioHome({ onOpenEditor }: Props) {
-  const [activeStep, setActiveStep] = useState(0)
   const [activeProject, setActiveProject] = useState(0)
   const [activeSection, setActiveSection] = useState('home')
   const [monochrome, setMonochrome] = useState(false)
   const [clock, setClock] = useState('')
   const [storyProject, setStoryProject] = useState<number | null>(null)
-  const dragState = useRef<{ x: number; y: number; pointerId: number; moved: boolean } | null>(null)
-  const suppressClick = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  const dragState = useRef<{ x: number; y: number; pointerId: number; moved: boolean; cardIndex: number | null } | null>(null)
+  const suppressClick = useRef(0)
   const storyTrack = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -133,16 +179,39 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
       activeCard.style.setProperty('--tilt-y', `${x * 9}deg`)
     }
   }
-  const handleDeckPointerDown = (event: PointerEvent<HTMLDivElement>) => { dragState.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, moved: false } }
+  const handleDeckPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest('button.gallery-arrow')) return
+    const card = (event.target as HTMLElement).closest<HTMLElement>('.gallery-card')
+    event.currentTarget.setPointerCapture(event.pointerId)
+    dragState.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, moved: false, cardIndex: card ? Number(card.dataset.projectIndex) : null }
+    event.currentTarget.style.setProperty('--drag-x', '0px')
+  }
+  const handleDeckPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const start = dragState.current
+    if (!start || start.pointerId !== event.pointerId) return
+    const dx = event.clientX - start.x
+    if (Math.abs(dx) > 6) { start.moved = true; setDragging(true); event.currentTarget.style.setProperty('--drag-x', `${dx}px`) }
+  }
   const handleDeckPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = dragState.current
     if (!start || start.pointerId !== event.pointerId) return
     const dx = event.clientX - start.x
-    if (Math.abs(dx) > 36) { start.moved = true; suppressClick.current = true; moveProject(dx < 0 ? 1 : -1); window.setTimeout(() => { suppressClick.current = false }, 120) }
+    if (start.moved) {
+      suppressClick.current = Date.now() + 180
+    }
+    if (Math.abs(dx) > 48) {
+      const hops = Math.min(2, Math.max(1, Math.floor(Math.abs(dx) / 230)))
+      moveProject((dx < 0 ? 1 : -1) * hops)
+    } else if (!start.moved && start.cardIndex !== null) {
+      suppressClick.current = Date.now() + 180
+      openStory(start.cardIndex)
+    }
+    event.currentTarget.style.setProperty('--drag-x', '0px')
+    setDragging(false)
     dragState.current = null
   }
   const handleDeckWheel = (event: WheelEventType<HTMLDivElement>) => {
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+    const delta = event.shiftKey ? event.deltaY : event.deltaX
     if (Math.abs(delta) > 12) { event.preventDefault(); moveProject(delta > 0 ? 1 : -1) }
   }
   const openStory = (index: number) => { setActiveProject(index); setStoryProject(index) }
@@ -189,7 +258,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <div className="intro-main">
             <div className="intro-copy">
               <p className="intro-kicker">HELLO, WORLD. I’M KASAM.</p>
-              <h1 id="intro-title">I make<br />the <em>complex</em><br />feel clear<span>.</span></h1>
+              <h1 id="intro-title">I make{' '}<br />the{' '}<em>complex</em>{' '}<br />feel clear<span>.</span></h1>
               <p className="intro-description">Full-stack developer building thoughtful tools for people finding their way through code, education, and everything in between.</p>
               <div className="intro-actions"><a href="#work" className="intro-primary">EXPLORE MY WORK <span>↘</span></a><a href="mailto:kasamthapamagar7@gmail.com" className="intro-contact">SAY HELLO ↗</a></div>
             </div>
@@ -211,13 +280,13 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
             <div className="showcase-grain" aria-hidden="true" />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
             <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
-            <div className="showcase-carousel" aria-label="Project carousel" onPointerDown={handleDeckPointerDown} onPointerUp={handleDeckPointerUp} onPointerCancel={() => { dragState.current = null }} onWheel={handleDeckWheel}>
+            <div className={`showcase-carousel${dragging ? ' is-dragging' : ''}`} aria-label="Project carousel. Drag left or right, swipe, scroll, or use the arrow buttons to browse." onPointerDown={handleDeckPointerDown} onPointerMove={handleDeckPointerMove} onPointerUp={handleDeckPointerUp} onLostPointerCapture={(event) => { if (dragState.current?.pointerId === event.pointerId) { dragState.current = null; setDragging(false) } }} onPointerCancel={(event) => { event.currentTarget.style.setProperty('--drag-x', '0px'); dragState.current = null; setDragging(false) }} onWheel={handleDeckWheel}>
               <button className="gallery-arrow gallery-previous" aria-label="Previous project" onClick={() => moveProject(-1)}>←</button>
               <div className="gallery-deck">
                 {showcaseProjects.map((project, i) => {
                   const relative = (i - activeProject + showcaseProjects.length) % showcaseProjects.length
                   const position = relative === 0 ? 'center' : relative === 1 ? 'right' : relative === showcaseProjects.length - 1 ? 'left' : 'far'
-                  return <button key={project.name} className={`gallery-card gallery-${position}`} onClick={() => { if (suppressClick.current) return; if (i === activeProject) openStory(i); else setActiveProject(i) }} aria-pressed={activeProject === i} aria-label={`${project.name}, ${project.kind}. Select project; select again to read its story`}>
+                  return <button key={project.name} data-project-index={i} className={`gallery-card gallery-${position}`} onClick={() => { if (Date.now() < suppressClick.current) return; openStory(i) }} aria-pressed={activeProject === i} aria-label={`Open ${project.name} project story, ${project.kind}`}>
                     <div className={`project-window project-window-${project.target}`}>
                       <div className="window-bar"><span><i /><i /><i /></span><b>{project.name.toUpperCase()}</b><span>↗</span></div>
                       {project.target === 'codebrain' && <div className="poster-art poster-brain"><div className="mock-kicker"><span>AI CODEBASE GUIDE</span><i>01 / 04</i></div><h2 className="mock-title">Understand<br /><em>the code.</em></h2><div className="mock-terminal"><div className="mock-terminal-top"><i /><i /><i /><span>codebrain — /usr/bin/env</span></div><div className="mock-terminal-copy"><small>loaded. paste a repository to begin.</small><b><i>›</i> codebrain --init</b><strong>Code<span>Brain</span></strong><div className="mock-prompt"><span>repo&gt;</span> github.com/…</div></div></div><div className="mock-footnote"><span>ASK → TRACE → UNDERSTAND</span><span>↗ 01</span></div></div>}
@@ -245,17 +314,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <article className="case-study case-codebrain" id="codebrain">
             <div className="case-index"><span>01 / DEVELOPER TOOLS</span><span className="work-status"><i /> ACTIVE BUILD</span></div>
             <div className="case-intro"><div><p className="work-overline">FIND YOUR WAY THROUGH A NEW CODEBASE</p><h3>CodeBrain<span>.</span></h3></div><p>Ask a codebase a question. Follow the answer back to the code.</p></div>
-            <div className="case-visual cb-visual" aria-label="Diagram of CodeBrain's indexing and question answering flow">
-              <div className="visual-heading"><span>HOW AN ANSWER HAPPENS</span><span>SELECT A STEP</span></div>
-              <div className="cb-pipeline" role="group" aria-label="Choose a CodeBrain pipeline stage">
-                {pipelineNodes.map((node, i) => <div className="cb-stage-wrap" key={node.title}>
-                  <button className={`cb-node cb-node-${i + 1}`} aria-pressed={activeStep === i} onClick={() => setActiveStep(i)}><span className="node-number">0{i + 1}</span><b>{node.title}</b><small>{node.note}</small><i className={i === 1 ? 'code-lines' : `node-icon icon-${i + 1}`}>{i === 1 ? <><em /><em /><em /></> : node.icon}</i></button>
-                  {i < pipelineNodes.length - 1 && <div className="cb-connector"><i>{node.verb}</i><span>→</span></div>}
-                </div>)}
-              </div>
-              <div className="cb-stage-detail" aria-live="polite"><span>0{activeStep + 1} / 04</span><p>{codeBrainSteps[activeStep].detail}</p></div>
-              <div className="cb-result"><span>THE RESULT</span><b>A plain-language answer with links to the source code.</b><i>↗</i></div>
-            </div>
+            <TraceMap target="codebrain" />
             <div className="case-bottom"><span className="case-cta-note">Early tests exposed a retrieval gap.</span><div className="case-actions"><a className="button-solid" href="https://codebrain-gamma.vercel.app" target="_blank" rel="noopener noreferrer">Open CodeBrain <span>↗</span></a><a className="text-link" href="https://github.com/kasamthapa/codebrain" target="_blank" rel="noopener noreferrer">Source <span>↗</span></a></div></div>
             <details className="case-builder"><summary>How it works <span>CODE · SEARCH · TESTING</span></summary><div><p>TypeScript and JavaScript are split by syntax structure, embedded with Gemini, and stored in PostgreSQL / pgvector. A question retrieves the five closest code chunks, then Gemini streams an answer with file and line context.</p><p><b>First manual evaluation:</b> 0 of 20 expected chunks were retrieved across 14 questions; 13 of 14 answers were faithful to the supplied context. Known edges include missing expression-only statements, no-op re-indexing, and support for TS / JS only. Proposed retrieval fixes are still proposals.</p><p><b>Stack:</b> React · TypeScript · Express · PostgreSQL · pgvector · Gemini · server-sent events</p></div></details>
           </article>
@@ -263,9 +322,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <article className="case-study case-sikshya" id="sikshyanepal">
             <div className="case-index"><span>02 / EDUCATION · NEPAL</span><span>STUDENT-FIRST GUIDE</span></div>
             <div className="case-intro"><div><p className="work-overline">MAKE THE EDUCATION JOURNEY EASIER TO FOLLOW</p><h3>SikshyaNepal<span>.</span></h3></div><p>Go from exploring colleges to planning your next step.</p></div>
-            <div className="education-flow" aria-label="Student journey: explore, compare, verify, plan">
-              {educationSteps.map((step, i) => <div className="education-flow-step" key={step.number}><span>{step.number}</span><b>{step.title}</b><small>{step.text}</small>{i < educationSteps.length - 1 && <i aria-hidden="true">→</i>}</div>)}
-            </div>
+            <TraceMap target="sikshyanepal" />
             <div className="education-source-note"><span>✓</span><p><b>Before you decide:</b> confirm dates, fees, and requirements with the institution’s official notice.</p></div>
             <div className="case-bottom"><span className="case-cta-note">A clearer place to research what comes next.</span><div className="case-actions"><a className="button-solid" href="https://shikshaxnepal.com" target="_blank" rel="noopener noreferrer">Visit SikshyaNepal <span>↗</span></a></div></div>
             <details className="case-builder"><summary>More about the product <span>FEATURES · SOURCES · STACK</span></summary><div><p>College and school discovery, program research, admission updates, source links, and a private checklist help students continue where they left off. Dates, fees, and requirements should be checked with the original institution notice.</p><p><b>Stack:</b> Next.js · React · TypeScript · Supabase · PostgreSQL</p></div></details>
@@ -274,12 +331,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <article className="case-study case-critch" id="critch">
             <div className="case-index"><span>03 / DEVELOPER COMMUNITY</span><span>STRUCTURED PEER REVIEW</span></div>
             <div className="case-intro"><div><p className="work-overline">TURN “NICE WORK” INTO USEFUL FEEDBACK</p><h3>Critch<span>.</span></h3></div><p>A simple path from sharing a project to knowing what to improve.</p></div>
-            <div className="critch-flow" aria-label="Critch process: share a project, get structured feedback, discuss it, improve">
-              <div className="critch-flow-step"><span>01</span><b>Share</b><small>Post your project</small></div>
-              <div className="critch-flow-step"><span>02</span><b>Review</b><small>Idea · UI · code · docs</small></div>
-              <div className="critch-flow-step"><span>03</span><b>Discuss</b><small>Reply in a thread</small></div>
-              <div className="critch-flow-step"><span>04</span><b>Improve</b><small>Leave with a next step</small></div>
-            </div>
+            <TraceMap target="critch" />
             <div className="critch-rule-note">One review per person, per project. Reputation grows from giving and receiving feedback.</div>
             <div className="case-bottom"><span className="case-cta-note">Specific feedback. A conversation. A next step.</span><div className="case-actions"><a className="button-solid" href="https://critch-neon.vercel.app" target="_blank" rel="noopener noreferrer">Open Critch <span>↗</span></a><a className="text-link" href="https://github.com/kasamthapa/critch" target="_blank" rel="noopener noreferrer">Source <span>↗</span></a></div></div>
             <details className="case-builder"><summary>More about Critch <span>RULES · STACK · DEPLOYMENT</span></summary><div><p>Projects can be shared and discovered; signed-in users leave structured reviews, threaded replies, and public profiles. Reputation reflects reviews given and received.</p><p><b>Known demo limit:</b> without a shared custom domain, browser cookie restrictions can expire sessions after 15 minutes.</p><p><b>Stack:</b> React · TypeScript · Express · PostgreSQL · Prisma · Cloudinary · JWT</p></div></details>
@@ -288,9 +340,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <article className="case-study case-rapporteur" id="rapporteur">
             <div className="case-index"><span>04 / MEETING NOTES · AI</span><span>QUOTES WITH SOURCE LINES</span></div>
             <div className="case-intro"><div><p className="work-overline">MEETING NOTES THAT SHOW THEIR RECEIPTS</p><h3>Rapporteur<span>.</span></h3></div><p>Turn a transcript into decisions and action items that readers can check for themselves.</p></div>
-            <div className="rapporteur-flow" aria-label="Rapporteur process: paste transcript, set agenda, review sourced claims, jump to source line">
-              {['Paste a transcript', 'Set the agenda', 'Review sourced claims', 'Jump to the exact line'].map((step, i) => <div className="rapporteur-flow-step" key={step}><span>0{i + 1}</span><b>{step}</b>{i < 3 && <i>→</i>}</div>)}
-            </div>
+            <TraceMap target="rapporteur" />
             <div className="rapporteur-truth"><span>THE RECEIPT</span><p>Each extracted decision or action item carries an exact quote and a transcript line. A quote match verifies the words, not whether the claim was interpreted correctly.</p></div>
             <div className="case-bottom"><span className="case-cta-note">No bot joins the call; there is no live recording.</span><div className="case-actions"><a className="button-solid" href="https://rapporteur.vercel.app" target="_blank" rel="noopener noreferrer">Visit Rapporteur <span>↗</span></a><a className="text-link" href="https://github.com/kasamthapa/Rapporteur" target="_blank" rel="noopener noreferrer">Source <span>↗</span></a></div></div>
             <details className="case-builder"><summary>Scope &amp; limitations <span>WHAT’S BUILT · WHAT’S NEXT</span></summary><div><p>Transcript parsing supports four formats. Agenda-aware extraction groups decisions and action items; a quote check compares model output against the cited line; selecting a claim jumps to that transcript line. The demo uses one prepared meeting whose participants agreed to share it.</p><p><b>Not built:</b> accounts, saved meetings, live recording, call integrations, or a database. The demo can be rate-limited and the server may sleep when idle.</p><p><b>Stack:</b> React · TypeScript · Node.js · Gemini · Zod</p></div></details>
@@ -321,6 +371,65 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
 }
 
 type ShowcaseProject = (typeof showcaseProjects)[number]
+
+function TraceMap({ target, compact = false }: { target: string; compact?: boolean }) {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const trace = traces[target]
+  const [step, setStep] = useState(0)
+  const [playing, setPlaying] = useState(true)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const current = trace.steps[step]
+  const byId = Object.fromEntries(trace.nodes.map((node) => [node.id, node]))
+  const edgePath = (from: string, to: string) => {
+    const a = byId[from], b = byId[to]
+    const x1 = a.x * 10, y1 = a.y * 4.3, x2 = b.x * 10, y2 = b.y * 4.3
+    const mid = (x1 + x2) / 2
+    return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`
+  }
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReduceMotion(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.2 })
+    observer.observe(map)
+    return () => observer.disconnect()
+  }, [])
+  useEffect(() => { setStep(0); setPlaying(true) }, [target])
+  useEffect(() => {
+    if (!playing || reduceMotion || !visible) return
+    const timer = window.setInterval(() => setStep((active) => (active + 1) % trace.steps.length), 4200)
+    return () => window.clearInterval(timer)
+  }, [playing, reduceMotion, visible, trace.steps.length])
+  const move = (delta: number) => setStep((active) => (active + delta + trace.steps.length) % trace.steps.length)
+  const activeNodes = new Set([current.from, current.to])
+  const selectedPath = edgePath(current.from, current.to)
+  return <div ref={mapRef} className={`trace-map trace-${target}${compact ? ' trace-map-compact' : ''}`} aria-label={`${target} system flow`}>
+    <div className="trace-map-head"><div><span>INSIDE THE SYSTEM</span><h4>Follow one action through the product.</h4></div><div className="trace-live"><i /> {reduceMotion ? 'MOTION REDUCED' : playing ? 'FLOW REPLAYING' : 'FLOW PAUSED'}</div></div>
+    <div className="trace-canvas" role="img" aria-label={`${target} data flow: ${current.title}. ${current.detail}`}>
+      <svg className="trace-wires" viewBox="0 0 1000 430" preserveAspectRatio="none" aria-hidden="true">
+        <defs><filter id={`traceGlow-${target}`} x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        {trace.steps.map((item) => <path key={`${item.from}-${item.to}`} className="trace-wire" d={edgePath(item.from, item.to)} />)}
+        <path className="trace-wire-active" d={selectedPath} />
+        {playing && !reduceMotion && <circle className="trace-packet" r="5" filter={`url(#traceGlow-${target})`}><animateMotion dur="2.3s" repeatCount="indefinite" path={selectedPath} /></circle>}
+      </svg>
+      <div className="trace-grid" aria-hidden="true" />
+      {trace.nodes.map((node, i) => <div key={node.id} className={`trace-node${i === 0 ? ' is-first' : ''}${i === trace.nodes.length - 1 ? ' is-last' : ''}${activeNodes.has(node.id) ? ' is-active' : ''}${node.id === current.to ? ' is-destination' : ''}`} style={{ left: `${node.x}%`, top: `${node.y}%` }}>
+        <span className="trace-node-index">{String(i + 1).padStart(2, '0')}</span><i>{node.icon}</i><b>{node.label}</b><small>{node.sub}</small>
+      </div>)}
+      <span className="trace-action-label" key={step}>{current.action}</span>
+      <div className="trace-canvas-foot"><span>INPUT</span><i /><span>TRANSFORMATION</span><i /><span>USEFUL OUTPUT</span></div>
+    </div>
+    <div className="trace-story" aria-live="polite" key={`${target}-${step}`}><span>0{step + 1} / 0{trace.steps.length}</span><div><h5>{current.title}</h5><p>{current.detail}</p></div><div className="trace-controls"><button onClick={() => move(-1)} aria-label="Previous system step">←</button><button onClick={() => setPlaying((value) => !value)} aria-label={playing ? 'Pause system flow' : 'Play system flow'}>{playing ? 'Ⅱ' : '▶'}</button><button onClick={() => move(1)} aria-label="Next system step">→</button></div></div>
+    <div className="trace-step-nav" aria-label="Choose a system step">{trace.steps.map((item, i) => <button key={item.title} className={step === i ? 'is-active' : ''} onClick={() => { setStep(i); if (!reduceMotion) setPlaying(false) }} aria-current={step === i ? 'step' : undefined}><span>0{i + 1}</span><b>{item.title}</b></button>)}</div>
+  </div>
+}
 
 function ProjectStory({ project, index, count, trackRef, onClose, onMove }: { project: ShowcaseProject; index: number; count: number; trackRef: { current: HTMLDivElement | null }; onClose: () => void; onMove: (delta: number) => void }) {
   const handleWheel = (event: WheelEventType<HTMLDivElement>) => {
@@ -359,8 +468,8 @@ function ProjectStory({ project, index, count, trackRef, onClose, onMove }: { pr
           <span className="film-next-cue">01 — THE PROJECT <b>SCROLL →</b></span>
         </article>
         <article className="film-panel film-process">
-          <div className="film-copy"><span className="film-overline">02 / HOW IT WORKS</span><h2>Make the<br /><em>path visible.</em></h2><p>{project.approach}</p><div className="film-prompt"><span>WHY THIS APPROACH</span><b>Each step gives the person using it something concrete to check or act on.</b></div></div>
-          <div className="film-process-art"><div className="film-process-heading"><span>THE FLOW</span><i>FOLLOW THE LINE</i></div><div className="film-flow-line" aria-hidden="true"><i /></div>{project.stages.map((step, stepIndex) => <div className="film-flow-step" key={step}><span>0{stepIndex + 1}</span><b>{step}</b><i>↗</i></div>)}<div className="film-process-caption">FROM INPUT TO A USEFUL NEXT STEP</div></div>
+          <div className="film-copy"><span className="film-overline">02 / HOW IT WORKS</span><h2>Follow the<br /><em>real path.</em></h2><p>{project.approach}</p><div className="film-prompt"><span>WHY THIS APPROACH</span><b>Each step gives the person using it something concrete to check or act on.</b></div></div>
+          <TraceMap target={project.target} compact />
           <span className="film-next-cue">02 — THE METHOD <b>SCROLL →</b></span>
         </article>
         <article className="film-panel film-proof">
