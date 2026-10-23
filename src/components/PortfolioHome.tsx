@@ -1,4 +1,5 @@
-import { useEffect, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
+import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
 
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
@@ -143,10 +144,13 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
               <div className="intro-actions"><a href="#work" className="intro-primary">EXPLORE MY WORK <span>↘</span></a><a href="mailto:kasamthapamagar7@gmail.com" className="intro-contact">SAY HELLO ↗</a></div>
             </div>
             <div className="intro-object" aria-hidden="true">
-              <div className="intro-orbit intro-orbit-one" /><div className="intro-orbit intro-orbit-two" /><div className="intro-orbit intro-orbit-three" />
-              <div className="intro-monogram"><span>K</span><i>.</i></div>
-              <span className="intro-object-label">BUILD WITH<br />INTENTION</span>
-              <span className="intro-object-coordinate">NP / 01</span>
+              <div className="intro-orbit intro-orbit-one" /><div className="intro-orbit intro-orbit-two" />
+              <div className="intro-portrait-card">
+                <span className="intro-poster-kicker">KASAM / THAPA MAGAR</span>
+                <div className="intro-poster-image"><span className="intro-poster-title">KASAM</span><div className="portrait-glyph">{PORTRAIT_BITS.map((bit, i) => <span key={i} style={{ top: `${(bit.r / PORTRAIT_ROWS) * 100}%`, left: `${(bit.c / PORTRAIT_COLS) * 100}%`, opacity: bit.op, '--portrait-alpha': bit.op } as CSSProperties}>{bit.ch}</span>)}</div><span className="intro-poster-coordinate">27° 43′ N&nbsp; / &nbsp;KTM</span></div>
+                <div className="intro-poster-caption"><span>FULL-STACK DEVELOPER</span><i>INDEPENDENT · 2026</i></div>
+              </div>
+              <span className="intro-object-label">SOFTWARE, MADE<br />IN KATHMANDU</span>
             </div>
           </div>
           <div className="intro-bottom"><span>SOFTWARE WITH A HUMAN POINT OF VIEW</span><a href="#work"><span>SCROLL TO EXPLORE</span><i>↓</i></a><span>01 — 04 / INTRODUCTION</span></div>
@@ -166,9 +170,9 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
                   return <button key={project.name} className={`gallery-card gallery-${position}`} onClick={() => setActiveProject(i)} aria-pressed={activeProject === i} aria-label={`${project.name}, ${project.kind}. Select project`}>
                     <div className={`project-window project-window-${project.target}`}>
                       <div className="window-bar"><span><i /><i /><i /></span><b>{project.name.toUpperCase()}</b><span>↗</span></div>
-                      {project.target === 'codebrain' && <div className="poster-art poster-brain"><span className="poster-edition">01 / CODE INTELLIGENCE</span><div className="brain-orbit brain-orbit-a" /><div className="brain-orbit brain-orbit-b" /><div className="brain-network"><i /><i /><i /><i /><i /><i /><b>Q</b><span className="network-path network-path-one" /><span className="network-path network-path-two" /><span className="network-path network-path-three" /></div><div className="poster-wordmark">CODE<br /><em>BRAIN</em><i>.</i></div><div className="poster-footer"><span>ASK IN PLAIN LANGUAGE</span><span>TRACE IT TO SOURCE ↗</span></div></div>}
-                      {project.target === 'sikshyanepal' && <div className="poster-art poster-education"><span className="poster-edition">02 / A STUDENT FIELD GUIDE</span><div className="nepal-contours"><i /><i /><i /><i /><b>◦</b><span>27° 43′ N</span></div><div className="education-wordmark">Sikshya<br /><em>Nepal</em></div><div className="education-poster-path"><span>EXPLORE</span><i /><span>COMPARE</span><i /><span>PLAN</span></div><div className="poster-footer"><span>COLLEGE · PROGRAM · ADMISSION</span><span>FOLLOW YOUR NEXT STEP ↗</span></div></div>}
-                      {project.target === 'critch' && <div className="poster-art poster-critch"><span className="poster-edition">03 / PROJECT REVIEW</span><div className="critch-wordmark">CRIT<br /><em>CH.</em></div><div className="critch-poster-grid"><div><i>01</i><b>IDEA</b></div><div><i>02</i><b>INTERFACE</b></div><div><i>03</i><b>CODE</b></div><div><i>04</i><b>DOCS</b></div></div><div className="critch-note-stack"><div>ONE THOUGHT<br />WORTH KEEPING</div><i>↳ THREAD IT</i><b>A BETTER<br />NEXT STEP</b></div><div className="poster-footer"><span>PEER FEEDBACK</span><span>GIVE · RECEIVE · IMPROVE ↗</span></div></div>}
+                      {project.target === 'codebrain' && <div className="poster-art poster-brain"><div className="mock-kicker"><span>AI CODEBASE GUIDE</span><i>01 / 03</i></div><h2 className="mock-title">Understand<br /><em>the code.</em></h2><div className="mock-terminal"><div className="mock-terminal-top"><i /><i /><i /><span>codebrain — /usr/bin/env</span></div><div className="mock-terminal-copy"><small>loaded. paste a repository to begin.</small><b><i>›</i> codebrain --init</b><strong>Code<span>Brain</span></strong><div className="mock-prompt"><span>repo&gt;</span> github.com/…</div></div></div><div className="mock-footnote"><span>ASK → TRACE → UNDERSTAND</span><span>↗ 01</span></div></div>}
+                      {project.target === 'sikshyanepal' && <div className="poster-art poster-education"><div className="mock-kicker"><span>STUDENT FIELD GUIDE / NP</span><i>02 / 03</i></div><h2 className="mock-title"><strong>+2 done.</strong><br /><em>Now what?</em></h2><p className="mock-description">Find what to study after +2, and where.</p><div className="mock-search"><span>⌕</span><i>e.g. BCA colleges in Kathmandu</i><b>Search&nbsp; →</b></div><div className="mock-chips"><span>IT &amp; Computing</span><span>Management</span><span>Humanities</span></div><div className="mock-notice"><small>◌ &nbsp;LATEST NOTICE</small><b>Admissions &amp; results, in one place.</b><span>VIEW OFFICIAL SOURCE&nbsp; ↗</span></div><div className="mock-footnote"><span>COLLEGES · PROGRAMS · NEXT STEPS</span><span>↗ 02</span></div></div>}
+                      {project.target === 'critch' && <div className="poster-art poster-critch"><div className="mock-kicker"><span>CRITCH / EXPLORE</span><i>03 / 03</i></div><h2 className="mock-title">Projects<span>.</span></h2><p className="mock-description">Browse and review work from the developer community.</p><div className="mock-project-card"><div className="mock-project-art"><span>WORK IN PROGRESS</span><b>MAKE<br />SOMETHING<br /><em>MATTER.</em></b><i>PROJECT / 001</i></div><div className="mock-project-meta"><b>Personal project</b><span>IDEA&nbsp; · &nbsp;UI&nbsp; · &nbsp;CODE&nbsp; · &nbsp;DOCS</span><div><i>01</i><i>02</i><i>03</i><i>04</i></div></div></div><div className="mock-footnote"><span>SPECIFIC FEEDBACK. NEXT STEPS.</span><span>↗ 03</span></div></div>}
                     </div>
                     <span className="gallery-card-kind">{project.kind}</span>
                   </button>
@@ -245,8 +249,8 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         </section>
 
         <footer className="portfolio-footer" id="contact">
-          <div><span className="section-index">HAVE A GOOD PROBLEM?</span><h2>Let’s make it clearer.</h2><a href="mailto:kasamthapamagar7@gmail.com">kasamthapamagar7@gmail.com <span>↗</span></a></div>
-          <div className="footer-right"><button className="source-switch" onClick={onOpenEditor}><span className="source-glyph">&lt;/&gt;</span> Explore source view</button><span>Thoughtful systems. Useful details.</span></div>
+          <div className="contact-copy"><span className="section-index">HAVE A GOOD PROBLEM?</span><h2>Let’s make it clearer.</h2><a className="contact-email" href="mailto:kasamthapamagar7@gmail.com">kasamthapamagar7@gmail.com <span>↗</span></a><nav className="contact-socials" aria-label="Find me online">{socials.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">{item.label}<span>↗</span></a>)}</nav></div>
+          <div className="footer-right"><span className="contact-index">KASAM / KTM&nbsp; · &nbsp;27° 43′ N</span><button className="source-switch" onClick={onOpenEditor}><span className="source-glyph">&lt;/&gt;</span> Explore source view</button><span>Thoughtful systems. Useful details.</span></div>
         </footer>
       </div>
     </main>
