@@ -2231,7 +2231,7 @@ body {
 /* One Mac title strip inside one CRT face: let the work own the screen. */
 .portfolio-home { padding: clamp(10px, 1.3vw, 19px); }
 .portfolio-rail {
-  grid-template-columns: 13px minmax(170px, .7fr) minmax(0, 1.3fr);
+  grid-template-columns: 38px minmax(170px, .7fr) minmax(0, 1.3fr);
   gap: clamp(12px, 2vw, 28px);
   height: 58px;
   padding-inline: clamp(12px, 2.3vw, 35px);
@@ -2276,12 +2276,6 @@ body {
 .intro-description { max-width: 455px; margin-top: 23px; }
 .intro-actions { margin-top: 25px; }
 .intro-object { width: min(100%, 580px); min-width: 0; aspect-ratio: 1.5; transform: none; animation: none; }
-.three-tape { position: absolute; inset: 0; }
-.three-tape canvas { display: block; width: 100%; height: 100%; }
-.three-tape.tape-fallback { background: radial-gradient(ellipse,rgba(193,177,137,.16),transparent 68%); }
-.three-tape:not(.is-ready)::before { position: absolute; inset: 15% 4%; border: 1px solid rgba(220,213,188,.55); background: linear-gradient(145deg,#363730,#121413 72%); box-shadow: 0 34px 65px rgba(0,0,0,.42),inset 0 0 0 7px rgba(255,255,255,.035); content: ''; }
-.three-tape:not(.is-ready)::after { position: absolute; top: 25%; left: 16%; display: flex; align-items: center; width: 68%; height: 48%; padding: 0 18px; border: 1px solid rgba(221,216,194,.48); background: repeating-linear-gradient(to bottom,rgba(255,255,255,.06) 0 1px,transparent 1px 4px),#171816; color: #d8d0b7; content: 'KASAM / THAPA MAGAR\A\A Useful things.\A Made with care.\A\A CODE  ·  EDUCATION  ·  PEOPLE'; white-space: pre; font: 400 clamp(10px,1.15vw,18px)/1.3 'Instrument Serif',Georgia,serif; }
-.three-tape.is-ready::before, .three-tape.is-ready::after { display: none; }
 .intro-object::before, .intro-orbit, .intro-object-label, .intro-object-coordinate { display: none; }
 .showcase-stage {
   grid-template-rows: auto auto minmax(440px,1fr) auto auto;
@@ -2296,7 +2290,6 @@ body {
 }
 .showcase-stage::after { border: 0; border-radius: 0; box-shadow: inset 0 0 68px rgba(0,0,0,.3); }
 .showcase-stage > *:not(.showcase-grain):not(.crt-glass) { position: relative; z-index: 2; }
-.crt-glass { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .showcase-topline { border-bottom-color: rgba(213,218,207,.2); }
 .showcase-intro { padding-top: 18px; }
 .showcase-intro p { font: 400 clamp(18px,2vw,26px) 'Bodoni Moda','Instrument Serif',Georgia,serif; }
@@ -2329,7 +2322,7 @@ body {
 .showcase-case-link { border-radius: 0; }
 .gallery-card-back { border-radius: 0; }
 @media (max-width: 900px) {
-  .portfolio-rail { grid-template-columns: 13px minmax(155px,.65fr) minmax(0,1.35fr); gap: 12px; }
+  .portfolio-rail { grid-template-columns: 38px minmax(155px,.65fr) minmax(0,1.35fr); gap: 12px; }
   .portfolio-nav { gap: clamp(8px,1.6vw,16px); }
   .intro-main { grid-template-columns: minmax(0,1fr) minmax(250px,.72fr); gap: 18px; }
   .intro-copy h1 { font-size: clamp(57px,8vw,84px); }
@@ -2337,7 +2330,7 @@ body {
 }
 @media (max-width: 640px) {
   .portfolio-home { padding: 7px; }
-  .portfolio-rail { grid-template-columns: 13px 1fr; height: auto; min-height: 48px; gap: 9px; padding: 8px 9px 0; }
+  .portfolio-rail { grid-template-columns: 38px 1fr; height: auto; min-height: 48px; gap: 9px; padding: 8px 9px 0; }
   .portfolio-brand { grid-column: 2; font-size: 9px; }
   .portfolio-brand small { font-size: 6px; }
   .portfolio-nav { grid-column: 1 / -1; justify-content: space-between; gap: 5px; margin: 2px 0 0; padding: 0 0 7px; }
@@ -2368,6 +2361,70 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .showcase-grain::after { animation: none; }
+}
+
+/* Introduction pass: let the statement carry the opening, without a filler prop. */
+.intro-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding: clamp(30px, 7vh, 78px) 0;
+  text-align: center;
+}
+.intro-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(61%, 900px);
+  max-width: 900px;
+  animation: none;
+  text-align: left;
+}
+.intro-kicker { margin-bottom: clamp(17px, 2.5vh, 28px); }
+.intro-copy h1 {
+  max-width: 860px;
+  color: #eeece3;
+  font: 400 clamp(76px, 9.2vw, 142px)/.83 'Bodoni Moda', 'Instrument Serif', Georgia, serif;
+  letter-spacing: -.075em;
+  text-wrap: balance;
+}
+.intro-copy h1 em { color: var(--phosphor); font-style: italic; }
+.intro-description { max-width: 470px; margin-top: clamp(18px, 3vh, 27px); }
+.intro-actions { justify-content: flex-start; margin-top: clamp(20px, 3vh, 28px); }
+.intro-object {
+  display: grid;
+  position: relative;
+  place-items: center;
+  width: min(37%, 500px);
+  min-width: 240px;
+  margin: 0 -1.5% 0 0;
+  opacity: .94;
+  transform: rotate(5deg);
+}
+.intro-cassette { display: block; width: 100%; overflow: visible; filter: drop-shadow(0 22px 35px rgba(0,0,0,.32)); }
+.intro-object-caption { position: absolute; right: 7%; bottom: 0; color: var(--screen-muted); font: 7px 'IBM Plex Mono', monospace; letter-spacing: .14em; }
+.cassette-float { transform-box: fill-box; transform-origin: center; animation: cassette-drift 7s ease-in-out infinite; }
+.cassette-reel { transform-box: fill-box; transform-origin: center; animation: cassette-reel 7s linear infinite; }
+.cassette-reel-right { animation-direction: reverse; animation-duration: 9s; }
+@keyframes cassette-drift { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes cassette-reel { to { rotate: 360deg; } }
+@media (max-width: 640px) {
+  .intro-main { flex-direction: column; align-items: flex-start; padding: 28px 0 20px; }
+  .intro-copy { width: 100%; }
+  .intro-copy h1 { max-width: 100%; font-size: clamp(60px, 14vw, 82px); line-height: .87; }
+  .intro-description { max-width: 330px; }
+  .intro-object { align-self: flex-end; width: min(62%, 275px); min-width: 190px; margin: 4px 1% -3px 0; }
+  .intro-object-caption { font-size: 5px; }
+}
+@media (min-width: 641px) and (max-width: 780px) {
+  .intro-copy h1 { font-size: clamp(64px, 8vw, 78px); }
+  .intro-object { width: 32%; min-width: 200px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cassette-float, .cassette-reel { animation: none !important; }
 }
 
 .trace-map { --trace-accent: #aab79e; --trace-glow: rgba(177,197,160,.35); position: relative; margin: 13px 0 17px; padding: clamp(16px, 2.5vw, 28px); overflow: hidden; border: 1px solid #3c433b; background: radial-gradient(ellipse at 54% 45%, #202620, #131715 74%); color: #e8e9e2; }
@@ -2621,3 +2678,22 @@ body {
 .brain-result > small { display: flex; align-items: center; gap: 6px; color: #aaa99e; font: 6px 'IBM Plex Mono',monospace; }
 .brain-result > small b { color: var(--phosphor); font-weight: 400; }
 .film-ui::after { position: absolute; inset: 0; content: ''; pointer-events: none; background: repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0 1px,transparent 1px 4px); opacity: .35; mix-blend-mode: screen; }
+
+.portfolio-footer {
+  min-height: 0;
+  margin: clamp(42px, 6vw, 78px) auto 28px;
+  overflow: visible;
+  padding: clamp(25px, 4vw, 44px) 0;
+  border: 0;
+  border-top: 1px solid var(--screen-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.portfolio-footer::before { display: none; }
+.about-section { padding-bottom: 48px; }
+.portfolio-footer .source-switch { min-height: 0; padding: 5px 0; border: 0; background: transparent; font: 8px 'IBM Plex Mono', monospace; }
+.portfolio-footer .source-switch:hover { background: transparent; }
+@media (max-width: 640px) {
+  .portfolio-footer { gap: 24px; padding: 24px 0; border-radius: 0; }
+}

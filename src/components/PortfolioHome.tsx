@@ -1,7 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { gsap } from 'gsap'
-import CRTGlass from './CRTGlass'
-import ThreeTape from './ThreeTape'
 
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
@@ -195,7 +193,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
     }
   }
   const handleDeckPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== 'mouse' || event.button !== 0 || (event.target as HTMLElement).closest('button.gallery-arrow')) return
+    if ((event.pointerType === 'mouse' && event.button !== 0) || (event.target as HTMLElement).closest('button.gallery-arrow')) return
     dragState.current = { x: event.clientX, scrollLeft: event.currentTarget.scrollLeft, pointerId: event.pointerId, moved: false, captured: false }
   }
   const handleDeckPointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -212,7 +210,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
   const handleDeckPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = dragState.current
     if (!start || start.pointerId !== event.pointerId) return
-    if (start.moved) suppressClick.current = Date.now() + 260
+    if (start.moved) { suppressClick.current = Date.now() + 260; setFlippedProject(null) }
     setDragging(false)
     dragState.current = null
   }
@@ -264,11 +262,46 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <div className="intro-main">
             <div className="intro-copy">
               <p className="intro-kicker">HELLO, WORLD. I’M KASAM.</p>
-              <h1 id="intro-title">I make{' '}<br />the{' '}<em>complex</em>{' '}<br />feel clear<span>.</span></h1>
+              <h1 id="intro-title">I make<br />the <em>complex</em><br />feel clear<span>.</span></h1>
               <p className="intro-description">Full-stack developer building thoughtful tools for people finding their way through code, education, and everything in between.</p>
               <div className="intro-actions"><a href="#work" className="intro-primary">EXPLORE MY WORK <span>↘</span></a><a href="mailto:kasamthapamagar7@gmail.com" className="intro-contact">SAY HELLO ↗</a></div>
             </div>
-            <div className="intro-object"><ThreeTape /></div>
+            <div className="intro-object" aria-hidden="true">
+              <svg className="intro-cassette" viewBox="0 0 560 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="tape-shell" x1="68" y1="38" x2="478" y2="330" gradientUnits="userSpaceOnUse"><stop stopColor="#37372F"/><stop offset=".46" stopColor="#1A1B18"/><stop offset="1" stopColor="#0D0E0D"/></linearGradient>
+                  <linearGradient id="tape-label" x1="112" y1="77" x2="442" y2="178" gradientUnits="userSpaceOnUse"><stop stopColor="#D7D0B3" stopOpacity=".95"/><stop offset="1" stopColor="#A9A98E" stopOpacity=".88"/></linearGradient>
+                  <radialGradient id="tape-reel"><stop stopColor="#C9C19F" stopOpacity=".24"/><stop offset=".44" stopColor="#C9C19F" stopOpacity=".08"/><stop offset=".47" stopColor="#11120F"/><stop offset="1" stopColor="#090A09"/></radialGradient>
+                  <filter id="tape-shadow" x="12" y="10" width="536" height="352" colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="16"/></filter>
+                </defs>
+                <ellipse cx="282" cy="293" rx="208" ry="29" fill="#000" fillOpacity=".6" filter="url(#tape-shadow)"/>
+                <g className="cassette-float">
+                  <path d="M67 61 456 43c13-.6 24 9 25 22l13 220c.8 13-9 24-22 25L82 329c-13 .7-24-9-25-22L44 87c-.8-13 9-25 23-26Z" fill="url(#tape-shell)" stroke="#C6C1A9" strokeOpacity=".68" strokeWidth="2"/>
+                  <path d="m84 78 353-16 8 96-350 16-11-96Z" fill="url(#tape-label)"/>
+                  <path d="m98 91 324-14M101 100l323-14M103 110l323-14" stroke="#34352E" strokeOpacity=".2"/>
+                  <text x="110" y="145" fill="#272822" fontFamily="IBM Plex Mono, monospace" fontSize="13" letterSpacing="3">KASAM / FIELD NOTES</text>
+                  <text x="391" y="145" fill="#272822" fontFamily="IBM Plex Mono, monospace" fontSize="10" letterSpacing="2">SIDE A</text>
+                  <path d="m83 184 372-17 8 104-372 18-8-105Z" fill="#11120F" stroke="#55564B" strokeOpacity=".8"/>
+                  <path d="m133 210 263-12 2 9-264 13-1-10Z" fill="#282923" stroke="#777561" strokeOpacity=".56"/>
+                  <path d="m150 211 225-11" stroke="#C7BE9D" strokeOpacity=".5" strokeWidth="2"/>
+                  <g className="cassette-reel cassette-reel-left" transform="translate(184 249)">
+                    <circle r="36" fill="url(#tape-reel)" stroke="#8B876F" strokeOpacity=".75"/>
+                    <circle r="22" stroke="#BEB694" strokeOpacity=".8" strokeWidth="2"/>
+                    <circle r="7" fill="#C9C19F"/>
+                    <path d="M0-29v13m25 16-12-7M-25 15l12-7" stroke="#C9C19F" strokeOpacity=".8" strokeWidth="3" strokeLinecap="round"/>
+                  </g>
+                  <g className="cassette-reel cassette-reel-right" transform="translate(355 242)">
+                    <circle r="36" fill="url(#tape-reel)" stroke="#8B876F" strokeOpacity=".75"/>
+                    <circle r="22" stroke="#BEB694" strokeOpacity=".8" strokeWidth="2"/>
+                    <circle r="7" fill="#C9C19F"/>
+                    <path d="M0-29v13m25 16-12-7M-25 15l12-7" stroke="#C9C19F" strokeOpacity=".8" strokeWidth="3" strokeLinecap="round"/>
+                  </g>
+                  <path d="m220 247 91-4 8-11 12 1-7 16-96 7-8 12-14-1 10-20Z" fill="#C9C19F" fillOpacity=".27" stroke="#BEB694" strokeOpacity=".55"/>
+                  <circle cx="78" cy="84" r="3" fill="#D6CEAD"/><circle cx="459" cy="65" r="3" fill="#D6CEAD"/><circle cx="91" cy="306" r="3" fill="#D6CEAD"/><circle cx="478" cy="285" r="3" fill="#D6CEAD"/>
+                </g>
+              </svg>
+              <span className="intro-object-caption">SIDE A&nbsp; / &nbsp;THOUGHTFUL SYSTEMS</span>
+            </div>
           </div>
           <div className="intro-bottom"><span>SOFTWARE WITH A HUMAN POINT OF VIEW</span><a href="#work"><span>SCROLL TO EXPLORE</span><i>↓</i></a><span>01 — 04 / INTRODUCTION</span></div>
         </section>
@@ -276,7 +309,6 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         <section className="portfolio-hero" id="work">
             <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%'); const card = event.currentTarget.querySelector<HTMLElement>('.gallery-center'); card?.style.setProperty('--tilt-x', '0deg'); card?.style.setProperty('--tilt-y', '0deg') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to browse. Press Enter or select a card to flip its brief description.">
             <div className="showcase-grain" aria-hidden="true" />
-            <CRTGlass />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
             <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
             <div ref={carouselRef} className={`showcase-carousel${dragging ? ' is-dragging' : ''}`} aria-label="Project carousel. Drag horizontally with a mouse, swipe with a finger, scroll, or use the arrow buttons to browse." onScroll={handleCarouselScroll} onPointerDown={handleDeckPointerDown} onPointerMove={handleDeckPointerMove} onPointerUp={handleDeckPointerUp} onLostPointerCapture={(event) => { if (dragState.current?.pointerId === event.pointerId) { dragState.current = null; setDragging(false) } }} onPointerCancel={() => { dragState.current = null; setDragging(false) }} onWheel={handleDeckWheel}>
