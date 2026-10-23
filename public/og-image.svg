@@ -34,14 +34,14 @@
 
     <text x="80" y="175" font-size="34" font-weight="700" fill="url(#nameGrad)">Kasam Thapa Magar</text>
 
-    <text x="80" y="213" font-size="17" fill="#9a9a9a">Full stack developer from Kathmandu.</text>
-    <text x="80" y="237" font-size="17" fill="#9a9a9a">Building AI developer tools.</text>
+    <text x="80" y="213" font-size="17" fill="#9a9a9a">Building products that make complex things feel simple.</text>
+    <text x="80" y="237" font-size="17" fill="#9a9a9a">CodeBrain · SikshyaNepal · Kathmandu, Nepal</text>
 
     <g font-size="14" fill="#5c9c53">
-      <text x="80" y="292">$ git log --oneline</text>
+      <text x="80" y="292">$ portfolio --featured</text>
     </g>
     <g font-size="12.5">
-      <text x="80" y="315"><tspan fill="#b5cea8">a3f9c12</tspan><tspan fill="#c9c9c9"> shipped codebrain — RAG over any repo</tspan></text>
+      <text x="80" y="315"><tspan fill="#b5cea8">CodeBrain</tspan><tspan fill="#c9c9c9"> — repo-grounded answers with citations</tspan></text>
     </g>
 
     <g font-size="13" fill="#3794ff">

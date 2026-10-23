@@ -1,6 +1,5 @@
-import { useState, type CSSProperties } from 'react'
-import { CodeEditor, CodeLine, kw, str, type, num, vr, cm, pn } from '../components/chrome/CodeEditor'
-import TypeIn from '../components/TypeIn'
+import type { CSSProperties } from 'react'
+import { CodeEditor, CodeLine, kw, str, type, vr, cm, pn } from '../components/chrome/CodeEditor'
 import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
 
 const LINKS = [
@@ -9,10 +8,10 @@ const LINKS = [
   { label: 'X', href: 'https://x.com/kasamthapa89' },
 ]
 
-const GIT_LOG = [
-  { hash: 'a3f9c12', msg: 'codebrain · ask questions across a codebase with citations' },
-  { hash: 'b2e1d07', msg: 'critch · structured peer reviews for developer projects' },
-  { hash: 'c8f3a91', msg: 'building useful products · Kathmandu, Nepal' },
+const WORK = [
+  { name: 'CodeBrain', msg: 'codebase answers with file + line citations' },
+  { name: 'SikshyaNepal', msg: 'college discovery + student guidance' },
+  { name: 'Currently', msg: 'building useful software in Kathmandu, Nepal' },
 ]
 
 function Code() {
@@ -53,7 +52,7 @@ function Code() {
       </CodeLine>
       <CodeLine n={12} indent={1}>
         {vr('role')}
-        {pn(':')} {str("'Full Stack Developer'")}
+        {pn(':')} {str("'Full-Stack Developer'")}
         {pn(',')}
       </CodeLine>
       <CodeLine n={13} indent={1}>
@@ -70,7 +69,7 @@ function Code() {
         {pn(',')}
       </CodeLine>
       <CodeLine n={16} indent={2}>
-        {str("'RAG pipelines'")}
+        {str("'education technology'")}
         {pn(',')}
       </CodeLine>
       <CodeLine n={17} indent={2}>{str("'backend systems'")}</CodeLine>
@@ -79,160 +78,71 @@ function Code() {
       <CodeLine n={20} />
       <CodeLine n={21}>{cm('// status: open to remote full-stack roles')}</CodeLine>
       <CodeLine n={22} />
-      <CodeLine n={23}>
-        {num('git')} {pn('log --oneline')}
-      </CodeLine>
-      {GIT_LOG.map((entry, i) => (
-        <CodeLine n={24 + i} key={entry.hash}>
-          <span style={{ color: 'var(--vs-comment)' }}>{entry.hash}</span> {entry.msg}
+      <CodeLine n={23}>{cm('// selected work')}</CodeLine>
+      {WORK.map((entry, i) => (
+        <CodeLine n={24 + i} key={entry.name}>
+          <span style={{ color: 'var(--vs-type)' }}>{entry.name}</span> {pn('·')} {entry.msg}
         </CodeLine>
       ))}
     </CodeEditor>
   )
 }
 
-const SUGGESTIONS = [
-  { kind: 'M', color: '#b180d7', text: 'hire(): Promise<Yes>' },
-  { kind: 'F', color: '#75beff', text: 'role: "Full Stack Developer"' },
-  { kind: 'P', color: '#ee9d28', text: 'availability: "open"' },
-]
-
-function IntelliSense() {
-  return (
-    <div
-      className="not-italic font-normal absolute left-0 top-full mt-1 w-72 max-w-[80vw] rounded-md border border-[var(--vs-panel-border)] bg-[var(--vs-palette-bg)] shadow-2xl overflow-hidden z-10 animate-suggest-in text-[12px] normal-case tracking-normal"
-      aria-hidden="true"
-    >
-      {SUGGESTIONS.map((item, i) => (
-        <div
-          key={item.text}
-          className={`flex items-center gap-2 px-2 py-1.5 ${i === 0 ? 'bg-[var(--vs-palette-selected-bg)]' : ''}`}
-        >
-          <span
-            className="w-4 h-4 rounded-sm flex items-center justify-center text-[10px] font-bold shrink-0"
-            style={{ background: `${item.color}33`, color: item.color }}
-          >
-            {item.kind}
-          </span>
-          <span className="text-[var(--vs-text)] truncate">{item.text}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function Preview() {
-  const [step, setStep] = useState(0)
-
   return (
-    <div className="h-full flex flex-col justify-center px-6 md:px-10 py-10 lg:py-6">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-10">
-        <div className="flex-1">
-          <p className="text-[var(--vs-muted)] text-xs md:text-sm mb-4">
-            <TypeIn text="~/kasam $ whoami" speed={35} cursor onDone={() => setStep(1)} />
-          </p>
-
-          <h1
-            className="relative text-3xl md:text-5xl font-bold tracking-tight mb-3 min-h-[1.15em] bg-clip-text text-transparent"
-            style={{
-              backgroundImage: 'linear-gradient(135deg, var(--vs-hero-grad-start) 30%, var(--vs-hero-grad-end) 100%)',
-            }}
-          >
-            {step >= 1 && (
-              <TypeIn
-                text="Kasam Thapa Magar"
-                speed={45}
-                cursor
-                cursorColor="var(--vs-hero-grad-end)"
-                onDone={() => setStep(2)}
-              />
-            )}
-            {step === 1 && <IntelliSense />}
-          </h1>
-
-          <p className="text-[var(--vs-muted)] text-sm md:text-base max-w-lg mb-6 min-h-[1.6em]">
-            {step >= 2 && (
-              <TypeIn
-                text="I build thoughtful full-stack products, from developer tools to AI-powered systems."
-                speed={14}
-                cursor
-                onDone={() => setStep(3)}
-              />
-            )}
-          </p>
-
-          <div
-            className={`flex flex-wrap gap-3 text-xs md:text-sm transition-opacity duration-700 ${
-              step >= 3 ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
+    <div className="hero-stage">
+      <section className="hero-intro">
+        <div className="hero-intro-copy">
+          <p className="hero-eyebrow"><span className="hero-pulse" /> FULL-STACK BUILDER <span className="hero-slash">/</span> KATHMANDU, NEPAL</p>
+          <h1>Make the complex<br /><span>feel simple.</span></h1>
+          <p className="hero-summary">I’m Kasam Thapa Magar. I build useful software, from AI that can read a codebase to better ways for students to find their next step.</p>
+          <div className="hero-actions">
+            <a href="https://codebrain-gamma.vercel.app" target="_blank" rel="noopener noreferrer" className="hero-primary">Explore CodeBrain <span>↗</span></a>
+            <a href="mailto:kasamthapamagar7@gmail.com" className="hero-secondary">Let’s talk <span>↗</span></a>
+          </div>
+          <div className="hero-socials">
             {LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1 border border-[var(--vs-panel-border)] rounded-sm text-[var(--vs-accent-bright)] hover:border-[var(--vs-accent-bright)] hover:bg-[var(--vs-hover)] transition-colors duration-200"
-              >
-                {link.label}
-              </a>
+              <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span>↗</span></a>
             ))}
           </div>
-
-          <div className={`mt-8 text-xs transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}>
-            <p className="text-[var(--vs-muted)] mb-1.5">
-              <span style={{ color: 'var(--vs-comment)' }}>~/kasam</span> $ git log --oneline
-            </p>
-            <div className="space-y-1">
-              {step >= 3 &&
-                GIT_LOG.map((entry, i) => (
-                  <p
-                    key={entry.hash}
-                    className="text-[var(--vs-muted)] animate-fade-in"
-                    style={{ animationDelay: `${0.3 + i * 0.25}s` }}
-                  >
-                    <span style={{ color: 'var(--vs-number)' }}>{entry.hash}</span> {entry.msg}
-                  </p>
-                ))}
-            </div>
-          </div>
-
-          <p
-            className={`mt-5 text-sm transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}
-            style={{ transitionDelay: step >= 3 ? '1.1s' : '0s' }}
-          >
-            <span style={{ color: 'var(--vs-comment)' }}>~/kasam</span>
-            <span className="text-[var(--vs-muted)]"> $ </span>
-            <span className="animate-caret">▌</span>
-          </p>
         </div>
-
-        <div className="hidden lg:block relative shrink-0" style={{ width: 260, height: 260 }} aria-hidden="true">
-          <div
-            className="absolute inset-0 rounded-full blur-3xl opacity-25 -z-10"
-            style={{ background: 'radial-gradient(circle, var(--vs-glow), transparent 65%)' }}
-          />
-          {step >= 3 &&
-            PORTRAIT_BITS.map((bit, i) => (
-              <span
-                key={i}
-                className="portrait-bit font-bold leading-none select-none"
-                style={
-                  {
-                    top: `${(bit.r / PORTRAIT_ROWS) * 100}%`,
-                    left: `${(bit.c / PORTRAIT_COLS) * 100}%`,
-                    fontSize: 7,
-                    color: bit.a ? 'var(--vs-glow)' : 'var(--vs-muted)',
-                    '--op': bit.op,
-                    animationDelay: `${0.3 + bit.r * 0.015}s`,
-                  } as CSSProperties
-                }
-              >
-                {bit.ch}
-              </span>
-            ))}
+        <div className="hero-portrait" aria-hidden="true">
+          <div className="portrait-orbit orbit-one" /><div className="portrait-orbit orbit-two" />
+          <div className="portrait-glow" />
+          {PORTRAIT_BITS.map((bit, i) => (
+            <span key={i} className="portrait-bit font-bold leading-none select-none" style={{
+              top: `${(bit.r / PORTRAIT_ROWS) * 100}%`, left: `${(bit.c / PORTRAIT_COLS) * 100}%`, fontSize: 7,
+              color: bit.a ? 'var(--vs-glow)' : 'var(--vs-muted)', '--op': bit.op,
+              animationDelay: `${0.2 + bit.r * 0.015}s`,
+            } as CSSProperties}>{bit.ch}</span>
+          ))}
+          <span className="portrait-caption">KTM · 27.7172° N</span>
         </div>
-      </div>
+      </section>
+
+      <section className="featured-build">
+        <div className="featured-heading"><div><span className="featured-kicker">01 / FEATURED BUILD</span><h2>CodeBrain<span className="featured-dot">.</span></h2></div><span className="featured-live"><i /> LIVE PROJECT</span></div>
+        <p className="featured-description">A codebase is a story. Ask it a question and get an answer with receipts.</p>
+        <div className="brain-demo">
+          <div className="brain-demo-top"><span className="brain-mark">⌘</span><div><strong>codebrain</strong><small>repository intelligence</small></div><span className="brain-demo-status"><i /> indexed</span></div>
+          <div className="brain-question"><span className="brain-prompt">EXAMPLE</span><span>How does CodeBrain understand a TypeScript repo?</span><span className="brain-cursor" /></div>
+          <div className="brain-answer"><span className="answer-spark">✳</span><div><p>It parses source into syntax-aware chunks—functions, classes, and imports—so answers can point back to relevant code.</p><div className="citation-row"><span className="citation-file">◈ source-grounded response</span><span className="citation-line">file + line citations</span><span className="citation-confidence">traceable to code</span></div></div></div>
+          <div className="brain-process"><span><b>01</b> repo map</span><i /><span><b>02</b> AST chunks</span><i /><span><b>03</b> cited answer</span></div>
+        </div>
+        <div className="featured-footer"><span><span className="stack-dot" /> TypeScript <span className="stack-dot" /> RAG built from scratch <span className="stack-dot" /> pgvector</span><a href="https://github.com/kasamthapa/codebrain" target="_blank" rel="noopener noreferrer">Inspect the source <span>↗</span></a></div>
+      </section>
+
+      <section className="side-projects">
+        <div className="side-project-heading"><span className="featured-kicker">BUILT FOR PEOPLE, NOT JUST SCREENS</span><span>More projects <span>↓</span></span></div>
+        <div className="side-project-grid">
+          <a className="side-project-card sikshya-card" href="https://shikshaxnepal.com" target="_blank" rel="noopener noreferrer">
+            <span className="side-project-index">02 / EDUCATION</span><span className="side-project-arrow">↗</span><h3>Sikshya<span>Nepal</span></h3><p>Helping students navigate colleges, admissions, and what comes next.</p><span className="side-project-link">Explore the platform <b>↗</b></span>
+          </a>
+          <a className="side-project-card critch-card" href="https://critch-neon.vercel.app" target="_blank" rel="noopener noreferrer">
+            <span className="side-project-index">03 / DEVELOPER COMMUNITY</span><span className="side-project-arrow">↗</span><h3>critch<span>.</span></h3><p>Real feedback for developers who are brave enough to ship.</p><span className="side-project-link">See the project <b>↗</b></span>
+          </a>
+        </div>
+      </section>
     </div>
   )
 }

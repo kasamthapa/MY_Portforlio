@@ -2,21 +2,16 @@ import { CodeEditor, CodeLine, kw, str, type, vr, cm, pn } from '../components/c
 import { useInView } from '../hooks/useInView'
 
 const NOW = [
-  { label: 'building', value: 'AI tools, full-stack products, and useful prototypes' },
-  { label: 'recent', value: 'TrustLayer · explainable credit decisions for small merchants' },
-  { label: 'recent', value: 'Rapporteur · multilingual meeting notes with quote matching' },
+  { label: 'building', value: 'CodeBrain · repo-grounded answers with file and line citations' },
+  { label: 'shipping', value: 'SikshyaNepal · college discovery and student guidance' },
   { label: 'focus', value: 'TypeScript · React · Node.js · PostgreSQL · applied AI' },
   { label: 'open_to', value: 'collaborations and remote full-stack opportunities' },
 ]
 
 const STORIES = [
   {
-    title: 'TrustLayer · financial inclusion prototype',
-    href: 'https://www.linkedin.com/posts/kasamthapamagar_trustlayer-kmchackverse2026-financialinclusion-activity-7474847759980855297-yLNv',
-  },
-  {
-    title: 'Rapporteur · multilingual meeting notes',
-    href: 'https://rapporteur.vercel.app',
+    title: 'SikshyaNepal · explore the platform',
+    href: 'https://shikshaxnepal.com',
   },
 ]
 

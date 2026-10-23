@@ -96,22 +96,26 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           </div>
 
           <div className="flex md:flex-col gap-4 md:gap-2 text-sm">
-            <a
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
-            >
-              live →
-            </a>
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--vs-muted)] hover:text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
-            >
-              github →
-            </a>
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
+              >
+                live →
+              </a>
+            )}
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--vs-muted)] hover:text-[var(--vs-accent-bright)] hover:underline underline-offset-4"
+              >
+                github →
+              </a>
+            )}
           </div>
         </div>
 

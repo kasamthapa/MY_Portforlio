@@ -6,6 +6,6 @@ export interface Project {
   decisions: string[]
   limitation: string
   stack: string[]
-  live: string
-  github: string
+  live?: string
+  github?: string
 }
