@@ -3,9 +3,10 @@ import { FilesIcon, SearchIcon } from './icons'
 interface Props {
   onMenuClick: () => void
   onQuickOpen: () => void
+  onPortfolioClick: () => void
 }
 
-export default function TitleBar({ onMenuClick, onQuickOpen }: Props) {
+export default function TitleBar({ onMenuClick, onQuickOpen, onPortfolioClick }: Props) {
   return (
     <div className="h-9 shrink-0 flex items-center bg-[var(--vs-titlebar)] border-b border-black/40 px-3 text-[12px] text-[var(--vs-muted)] select-none">
       <div className="flex items-center gap-1.5 w-24 lg:w-28">
@@ -34,7 +35,9 @@ export default function TitleBar({ onMenuClick, onQuickOpen }: Props) {
         <span className="sm:hidden truncate">kasam-portfolio</span>
       </div>
 
-      <div className="w-24 lg:w-28" aria-hidden="true" />
+      <button onClick={onPortfolioClick} className="w-24 lg:w-28 text-right text-[10px] hover:text-[var(--vs-text)] transition-colors">
+        ← Portfolio
+      </button>
     </div>
   )
 }

@@ -9,6 +9,7 @@ import SplitPane from './components/chrome/SplitPane'
 import CommandPalette, { type Command } from './components/chrome/CommandPalette'
 import { CheckIcon } from './components/chrome/icons'
 import { FILES, DEFAULT_FILE_ID } from './editor/registry'
+import PortfolioHome from './components/PortfolioHome'
 
 const EASE = 'cubic-bezier(0.16,1,0.3,1)'
 
@@ -19,6 +20,7 @@ export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false)
   const [terminalMounted, setTerminalMounted] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [editorMode, setEditorMode] = useState(false)
   const [booted, setBooted] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout>>()
@@ -118,6 +120,8 @@ export default function App() {
     })
   }
 
+  if (!editorMode) return <PortfolioHome onOpenEditor={() => setEditorMode(true)} />
+
   return (
     <div className="vscode-shell flex flex-col overflow-hidden relative">
       <a href="#editor-panel" className="skip-link">
@@ -134,7 +138,11 @@ export default function App() {
         <p className="text-xs text-[var(--vs-muted)] tracking-wide">kasam-portfolio</p>
       </div>
 
-      <TitleBar onMenuClick={() => setSidebarOpen((v) => !v)} onQuickOpen={() => setPaletteOpen(true)} />
+      <TitleBar
+        onMenuClick={() => setSidebarOpen((v) => !v)}
+        onQuickOpen={() => setPaletteOpen(true)}
+        onPortfolioClick={() => setEditorMode(false)}
+      />
 
       <div className="flex-1 flex min-h-0 relative">
         <ActivityBar onSearchClick={() => setPaletteOpen(true)} />
