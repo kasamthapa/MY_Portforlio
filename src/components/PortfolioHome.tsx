@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
-import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { gsap } from 'gsap'
+import CRTGlass from './CRTGlass'
+import ThreeTape from './ThreeTape'
 
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
@@ -132,6 +134,18 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
     return () => { observer.disconnect(); flowObserver.disconnect(); window.clearInterval(clockTimer) }
   }, [])
 
+  useLayoutEffect(() => {
+    const motion = gsap.matchMedia()
+    motion.add('(prefers-reduced-motion: no-preference)', () => {
+      const transition = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      transition
+        .fromTo('.showcase-selected h1', { autoAlpha: 0, y: 13, filter: 'blur(7px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: .54 })
+        .fromTo('.gallery-center .project-window', { clipPath: 'inset(8% 0 0)', autoAlpha: .68 }, { clipPath: 'inset(0% 0 0)', autoAlpha: 1, duration: .72 }, 0)
+      return () => transition.kill()
+    })
+    return () => motion.revert()
+  }, [activeProject])
+
   const scrollToProject = (index: number, behavior: ScrollBehavior = 'smooth') => {
     const carousel = carouselRef.current
     const card = carousel?.querySelector<HTMLElement>(`[data-project-index="${index}"]`)
@@ -213,7 +227,6 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
       <aside className="portfolio-rail" aria-label="Portfolio navigation">
         <div className="mac-window-lights" aria-hidden="true"><i /><i /><i /></div>
         <a className="portfolio-brand" href="#home" aria-label="Kasam Thapa Magar home">
-          <span className="brand-mark">K<span>.</span></span>
           <span>Kasam Thapa Magar<small>Developer · Kathmandu, Nepal</small></span>
         </a>
 
@@ -255,15 +268,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
               <p className="intro-description">Full-stack developer building thoughtful tools for people finding their way through code, education, and everything in between.</p>
               <div className="intro-actions"><a href="#work" className="intro-primary">EXPLORE MY WORK <span>↘</span></a><a href="mailto:kasamthapamagar7@gmail.com" className="intro-contact">SAY HELLO ↗</a></div>
             </div>
-            <div className="intro-object" aria-hidden="true">
-              <div className="intro-orbit intro-orbit-one" /><div className="intro-orbit intro-orbit-two" />
-              <div className="intro-portrait-card">
-                <span className="intro-poster-kicker">KASAM / THAPA MAGAR</span>
-                <div className="intro-poster-image"><span className="intro-poster-title">KASAM</span><div className="portrait-glyph">{PORTRAIT_BITS.map((bit, i) => <span key={i} style={{ top: `${(bit.r / PORTRAIT_ROWS) * 100}%`, left: `${(bit.c / PORTRAIT_COLS) * 100}%`, opacity: bit.op, '--portrait-alpha': bit.op } as CSSProperties}>{bit.ch}</span>)}</div><span className="intro-poster-coordinate">27° 43′ N&nbsp; / &nbsp;KTM</span></div>
-                <div className="intro-poster-caption"><span>FULL-STACK DEVELOPER</span><i>INDEPENDENT · 2026</i></div>
-              </div>
-              <span className="intro-object-label">SOFTWARE, MADE<br />IN KATHMANDU</span>
-            </div>
+            <div className="intro-object"><ThreeTape /></div>
           </div>
           <div className="intro-bottom"><span>SOFTWARE WITH A HUMAN POINT OF VIEW</span><a href="#work"><span>SCROLL TO EXPLORE</span><i>↓</i></a><span>01 — 04 / INTRODUCTION</span></div>
         </section>
@@ -271,6 +276,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         <section className="portfolio-hero" id="work">
             <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%'); const card = event.currentTarget.querySelector<HTMLElement>('.gallery-center'); card?.style.setProperty('--tilt-x', '0deg'); card?.style.setProperty('--tilt-y', '0deg') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to browse. Press Enter or select a card to flip its brief description.">
             <div className="showcase-grain" aria-hidden="true" />
+            <CRTGlass />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
             <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
             <div ref={carouselRef} className={`showcase-carousel${dragging ? ' is-dragging' : ''}`} aria-label="Project carousel. Drag horizontally with a mouse, swipe with a finger, scroll, or use the arrow buttons to browse." onScroll={handleCarouselScroll} onPointerDown={handleDeckPointerDown} onPointerMove={handleDeckPointerMove} onPointerUp={handleDeckPointerUp} onLostPointerCapture={(event) => { if (dragState.current?.pointerId === event.pointerId) { dragState.current = null; setDragging(false) } }} onPointerCancel={() => { dragState.current = null; setDragging(false) }} onWheel={handleDeckWheel}>

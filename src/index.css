@@ -2228,6 +2228,148 @@ body {
   .gallery-card, .gallery-card-inner { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
+/* One Mac title strip inside one CRT face: let the work own the screen. */
+.portfolio-home { padding: clamp(10px, 1.3vw, 19px); }
+.portfolio-rail {
+  grid-template-columns: 13px minmax(170px, .7fr) minmax(0, 1.3fr);
+  gap: clamp(12px, 2vw, 28px);
+  height: 58px;
+  padding-inline: clamp(12px, 2.3vw, 35px);
+  border: 0;
+  border-bottom: 1px solid rgba(231,229,217,.14);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.mac-window-lights { gap: 6px; }
+.mac-window-lights i { width: 9px; height: 9px; }
+.brand-mark { display: none; }
+.portfolio-brand { gap: 0; font-size: 11px; }
+.portfolio-brand small { margin-top: 3px; font-size: 7px; }
+.portfolio-nav { justify-content: flex-end; gap: clamp(12px, 2.4vw, 38px); }
+.portfolio-nav a { padding-block: 5px; font-size: 8px; }
+.portfolio-nav a > span { font-size: 6px; }
+.rail-bottom { display: none; }
+.portfolio-content { max-width: 1640px; padding-inline: clamp(12px, 2.5vw, 38px); }
+.intro-experience {
+  display: flex;
+  flex-direction: column;
+  min-height: min(900px, calc(100svh - 80px));
+  padding: clamp(28px, 4vw, 62px) clamp(14px, 3vw, 46px) 18px;
+  border: 0;
+  background: radial-gradient(ellipse at 68% 48%, rgba(166,157,128,.1), transparent 34%), linear-gradient(155deg,#171817,#101111 76%);
+  box-shadow: none;
+}
+.intro-main {
+  display: grid;
+  grid-template-columns: minmax(0,1.12fr) minmax(310px,.88fr);
+  align-items: center;
+  gap: clamp(20px, 5vw, 84px);
+  flex: 1;
+  padding: clamp(25px, 5vh, 55px) 0;
+  text-align: left;
+}
+.intro-copy { display: block; max-width: 800px; animation: none; }
+.intro-copy h1 { max-width: 840px; font-size: clamp(68px, 8vw, 124px); line-height: .87; }
+.intro-copy h1 br { display: initial; }
+.intro-description { max-width: 455px; margin-top: 23px; }
+.intro-actions { margin-top: 25px; }
+.intro-object { width: min(100%, 580px); min-width: 0; aspect-ratio: 1.5; transform: none; animation: none; }
+.three-tape { position: absolute; inset: 0; }
+.three-tape canvas { display: block; width: 100%; height: 100%; }
+.three-tape.tape-fallback { background: radial-gradient(ellipse,rgba(193,177,137,.16),transparent 68%); }
+.three-tape:not(.is-ready)::before { position: absolute; inset: 15% 4%; border: 1px solid rgba(220,213,188,.55); background: linear-gradient(145deg,#363730,#121413 72%); box-shadow: 0 34px 65px rgba(0,0,0,.42),inset 0 0 0 7px rgba(255,255,255,.035); content: ''; }
+.three-tape:not(.is-ready)::after { position: absolute; top: 25%; left: 16%; display: flex; align-items: center; width: 68%; height: 48%; padding: 0 18px; border: 1px solid rgba(221,216,194,.48); background: repeating-linear-gradient(to bottom,rgba(255,255,255,.06) 0 1px,transparent 1px 4px),#171816; color: #d8d0b7; content: 'KASAM / THAPA MAGAR\A\A Useful things.\A Made with care.\A\A CODE  ·  EDUCATION  ·  PEOPLE'; white-space: pre; font: 400 clamp(10px,1.15vw,18px)/1.3 'Instrument Serif',Georgia,serif; }
+.three-tape.is-ready::before, .three-tape.is-ready::after { display: none; }
+.intro-object::before, .intro-orbit, .intro-object-label, .intro-object-coordinate { display: none; }
+.showcase-stage {
+  grid-template-rows: auto auto minmax(440px,1fr) auto auto;
+  height: min(830px, calc(100svh - 76px));
+  min-height: 690px;
+  overflow: visible;
+  padding: 18px clamp(16px,3.4vw,50px) 14px;
+  border: 0;
+  border-radius: 0;
+  background: radial-gradient(ellipse at 50% 48%,#1a1b19 0%,#101111 63%,#0b0c0c 100%);
+  box-shadow: none;
+}
+.showcase-stage::after { border: 0; border-radius: 0; box-shadow: inset 0 0 68px rgba(0,0,0,.3); }
+.showcase-stage > *:not(.showcase-grain):not(.crt-glass) { position: relative; z-index: 2; }
+.crt-glass { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
+.showcase-topline { border-bottom-color: rgba(213,218,207,.2); }
+.showcase-intro { padding-top: 18px; }
+.showcase-intro p { font: 400 clamp(18px,2vw,26px) 'Bodoni Moda','Instrument Serif',Georgia,serif; }
+.showcase-carousel { min-height: 0; height: 100%; overflow-y: hidden; }
+.gallery-deck { min-height: 0; height: 100%; }
+.gallery-card { height: min(100%,438px); }
+.gallery-card.gallery-center { animation: none !important; }
+.project-window { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.window-bar { display: none; }
+.poster-art { border: 1px solid rgba(221,219,208,.28); border-radius: 0; box-shadow: 0 25px 65px rgba(0,0,0,.28); }
+.mock-terminal { border: 0; border-left: 1px solid rgba(171,189,155,.45); border-radius: 0; background: rgba(9,12,9,.25); box-shadow: none; }
+.mock-terminal-top { display: none; }
+.mock-prompt { padding: 2px 0; border: 0; }
+.mock-search { border: 0; border-radius: 0; box-shadow: none; }
+.mock-search > b { border-radius: 0; }
+.mock-chips span { border-radius: 0; }
+.mock-notice { border: 0; border-left: 1px solid rgba(199,219,211,.4); border-radius: 0; background: rgba(38,56,56,.34); box-shadow: none; transform: none; }
+.mock-project-card { border: 0; background: transparent; box-shadow: none; }
+.mock-project-meta { border-top: 1px solid rgba(229,231,220,.24); }
+.mock-search { padding-inline: 0; background: transparent; color: #d8d9d0; }
+.mock-search > span { padding: 0; }
+.mock-search > b { padding: 3px 0 3px 8px; border-left: 1px solid rgba(200,193,166,.4); background: transparent; color: #c9c2a8; }
+.mock-chips span { padding: 0; border: 0; color: #c3c7bd; }
+.mock-chips span + span::before { margin-right: 5px; color: #898a80; content: '·'; }
+.rapporteur-note { gap: 10px; padding: 0; border: 0; background: transparent; box-shadow: none; }
+.rapporteur-note-top { padding-bottom: 5px; border-bottom: 1px solid rgba(220,215,190,.2); }
+.rapporteur-agenda { padding: 5px 0 5px 8px; border-left-width: 1px; background: transparent; }
+.rapporteur-agenda.is-off { opacity: .68; }
+.showcase-open { border-radius: 0; background: transparent; }
+.showcase-case-link { border-radius: 0; }
+.gallery-card-back { border-radius: 0; }
+@media (max-width: 900px) {
+  .portfolio-rail { grid-template-columns: 13px minmax(155px,.65fr) minmax(0,1.35fr); gap: 12px; }
+  .portfolio-nav { gap: clamp(8px,1.6vw,16px); }
+  .intro-main { grid-template-columns: minmax(0,1fr) minmax(250px,.72fr); gap: 18px; }
+  .intro-copy h1 { font-size: clamp(57px,8vw,84px); }
+  .showcase-stage { grid-template-rows: auto auto minmax(380px,1fr) auto auto; min-height: 660px; }
+}
+@media (max-width: 640px) {
+  .portfolio-home { padding: 7px; }
+  .portfolio-rail { grid-template-columns: 13px 1fr; height: auto; min-height: 48px; gap: 9px; padding: 8px 9px 0; }
+  .portfolio-brand { grid-column: 2; font-size: 9px; }
+  .portfolio-brand small { font-size: 6px; }
+  .portfolio-nav { grid-column: 1 / -1; justify-content: space-between; gap: 5px; margin: 2px 0 0; padding: 0 0 7px; }
+  .portfolio-nav a { gap: 3px; font-size: 6px; }
+  .portfolio-nav a > span { display: inline; font-size: 5px; }
+  .portfolio-content { padding-inline: 8px; }
+  .intro-experience { min-height: min(770px,calc(100svh - 68px)); padding: 18px 10px 12px; }
+  .intro-main { grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; gap: 12px; padding: 20px 0 15px; }
+  .intro-copy { order: 0; }
+  .intro-copy h1 { font-size: clamp(57px,13vw,82px); }
+  .intro-object { width: min(88%,430px); aspect-ratio: 1.55; justify-self: center; }
+  .intro-description { max-width: 350px; font-size: 12px; }
+  .intro-bottom { font-size: 5px; }
+  .showcase-stage { grid-template-rows: auto auto minmax(340px,1fr) auto auto; height: min(710px,calc(100svh - 76px)); min-height: 610px; padding: 12px 8px 10px; }
+  .showcase-topline { min-height: 28px; font-size: 6px; }
+  .showcase-tools { gap: 8px; }
+  .showcase-tools button { font-size: 6px; }
+  .showcase-intro { padding-top: 13px; font-size: 6px; }
+  .showcase-intro p { max-width: 58%; font-size: 14px; text-align: right; }
+  .showcase-carousel { --gallery-card-width: 76vw; min-height: 0; height: 100%; }
+  .gallery-deck { min-height: 0; gap: 20px; }
+  .gallery-card { height: min(100%,375px); }
+  .showcase-caption { grid-template-columns: 1fr auto; gap: 8px; }
+  .showcase-selected h1 { font-size: 31px; }
+  .showcase-selected p { max-width: 220px; font-size: 10px; }
+  .showcase-case-link { font-size: 6px; }
+  .showcase-hint > small { font-size: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .showcase-grain::after { animation: none; }
+}
+
 .trace-map { --trace-accent: #aab79e; --trace-glow: rgba(177,197,160,.35); position: relative; margin: 13px 0 17px; padding: clamp(16px, 2.5vw, 28px); overflow: hidden; border: 1px solid #3c433b; background: radial-gradient(ellipse at 54% 45%, #202620, #131715 74%); color: #e8e9e2; }
 .case-sikshya .trace-map { --trace-accent: #a8c4c0; --trace-glow: rgba(149,202,192,.3); }
 .case-critch .trace-map { --trace-accent: #c4bba4; --trace-glow: rgba(202,188,153,.27); }
