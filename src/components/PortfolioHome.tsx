@@ -1,5 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react'
-import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
+import { useEffect, useState, type KeyboardEvent } from 'react'
 
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
@@ -35,15 +34,27 @@ const pipelineNodes = [
   { title: 'Check sources', note: 'Files + line numbers', verb: '', icon: '[ ↗ ]' },
 ]
 
+const showcaseProjects = [
+  { name: 'CodeBrain', kind: 'DEVELOPER TOOLS', note: 'Ask a codebase. Follow the answer to its source.', href: 'https://codebrain-gamma.vercel.app', target: 'codebrain' },
+  { name: 'SikshyaNepal', kind: 'EDUCATION · NEPAL', note: 'Explore your options. Make the next step clearer.', href: 'https://shikshaxnepal.com', target: 'sikshyanepal' },
+  { name: 'Critch', kind: 'PEER FEEDBACK', note: 'Turn “nice work” into a useful next move.', href: 'https://critch-neon.vercel.app', target: 'critch' },
+]
+
 interface Props {
   onOpenEditor: () => void
 }
 
 export default function PortfolioHome({ onOpenEditor }: Props) {
   const [activeStep, setActiveStep] = useState(0)
+  const [activeProject, setActiveProject] = useState(0)
   const [activeSection, setActiveSection] = useState('home')
+  const [monochrome, setMonochrome] = useState(false)
+  const [clock, setClock] = useState('')
 
   useEffect(() => {
+    const updateClock = () => setClock(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kathmandu', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()))
+    updateClock()
+    const clockTimer = window.setInterval(updateClock, 1000)
     const scrollRoot = document.querySelector('.portfolio-home')
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting)
@@ -66,8 +77,14 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
       })
     }, { root: scrollRoot, threshold: 0.18 })
     document.querySelectorAll('.cb-pipeline, .education-flow, .critch-flow').forEach((flow) => flowObserver.observe(flow))
-    return () => { observer.disconnect(); flowObserver.disconnect() }
+    return () => { observer.disconnect(); flowObserver.disconnect(); window.clearInterval(clockTimer) }
   }, [])
+
+  const moveProject = (direction: number) => setActiveProject((current) => (current + direction + showcaseProjects.length) % showcaseProjects.length)
+  const handleGalleryKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); moveProject(-1) }
+    if (event.key === 'ArrowRight') { event.preventDefault(); moveProject(1) }
+  }
 
   return (
     <main className="portfolio-home">
@@ -106,30 +123,32 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
 
       <div className="portfolio-content">
         <section className="portfolio-hero" id="home">
-          <div className="portfolio-hero-copy">
-            <p className="portfolio-eyebrow"><span /> SOFTWARE FOR THE MOMENT YOU FEEL STUCK</p>
-            <h1>Make the next step<br /><em>easier to see.</em></h1>
-            <p className="portfolio-lede">
-              I’m Kasam. I build useful software for two moments of uncertainty: opening a codebase you don’t know, and figuring out where your education could take you.
-            </p>
-            <div className="portfolio-hero-actions">
-              <a className="button-solid" href="#work">Explore the work <span>↓</span></a>
-              <a className="text-link" href="mailto:kasamthapamagar7@gmail.com">Start a conversation <span>↗</span></a>
+          <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to change projects.">
+            <div className="showcase-grain" aria-hidden="true" />
+            <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
+            <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
+            <div className="showcase-carousel" aria-label="Project carousel">
+              <button className="gallery-arrow gallery-previous" aria-label="Previous project" onClick={() => moveProject(-1)}>←</button>
+              <div className="gallery-deck">
+                {showcaseProjects.map((project, i) => {
+                  const relative = (i - activeProject + showcaseProjects.length) % showcaseProjects.length
+                  const position = relative === 0 ? 'center' : relative === 1 ? 'right' : 'left'
+                  return <button key={project.name} className={`gallery-card gallery-${position}`} onClick={() => setActiveProject(i)} aria-pressed={activeProject === i} aria-label={`${project.name}, ${project.kind}. Select project`}>
+                    <div className={`project-window project-window-${project.target}`}>
+                      <div className="window-bar"><span><i /><i /><i /></span><b>{project.name.toUpperCase()}</b><span>↗</span></div>
+                      {project.target === 'codebrain' && <div className="brain-preview"><div className="brain-files"><span>EXPLORER</span><b>⌄ &nbsp; REPOSITORY</b><i>⌞ &nbsp; src</i><i>⌞ &nbsp; routes</i><i>⌞ &nbsp; server</i><i>⌞ &nbsp; package.json</i></div><div className="brain-editor"><span>ASK YOUR CODEBASE</span><b>Where is this behavior defined?</b><i>⌕ &nbsp; searching the project</i><div className="brain-answer"><small>ANSWER · WITH SOURCE LINKS</small><p>Follow the explanation back to the code that supports it.</p><a>OPEN SOURCE &nbsp; ↗</a></div></div></div>}
+                      {project.target === 'sikshyanepal' && <div className="education-preview"><div className="education-preview-kicker">YOUR NEXT STEP, MADE CLEARER</div><b>Explore what<br />comes next.</b><div className="education-preview-path"><span>DISCOVER</span><i /><span>COMPARE</span><i /><span>PLAN</span></div><div className="education-preview-card"><small>RESEARCH PATH</small><div><i>01</i> Find programs <b>↗</b></div><div><i>02</i> Check official notices <b>↗</b></div><div><i>03</i> Save a next step <b>↗</b></div></div></div>}
+                      {project.target === 'critch' && <div className="critch-preview"><div className="critch-preview-sidebar"><small>REVIEW AREAS</small><b>01 &nbsp; Idea</b><span>02 &nbsp; Interface</span><span>03 &nbsp; Code</span><span>04 &nbsp; Docs</span></div><div className="critch-preview-main"><small>PROJECT REVIEW / 01</small><h4>Useful feedback<br />moves the work.</h4><div className="critch-preview-note"><b>THE IDEA</b><p>One clear thought to help the project improve.</p><span>↳ REPLY IN THREAD</span></div><div className="critch-preview-reply">Builder replies. The conversation continues.</div></div></div>}
+                    </div>
+                    <span className="gallery-card-kind">{project.kind}</span>
+                  </button>
+                })}
+              </div>
+              <button className="gallery-arrow gallery-next" aria-label="Next project" onClick={() => moveProject(1)}>→</button>
             </div>
-            <div className="hero-caption"><span>01—03</span><span>Small products for real questions.</span></div>
+            <div className="showcase-caption"><div className="showcase-selected"><span>{String(activeProject + 1).padStart(2, '0')} / 03 · {showcaseProjects[activeProject].kind}</span><h1>{showcaseProjects[activeProject].name}<i>.</i></h1><p>{showcaseProjects[activeProject].note}</p></div><div className="showcase-actions"><a className="showcase-open" href={showcaseProjects[activeProject].href} target="_blank" rel="noopener noreferrer">OPEN PROJECT <span>↗</span></a><a className="showcase-case-link" href={`#${showcaseProjects[activeProject].target}`}>CASE NOTES ↓</a></div><div className="showcase-hint"><span>← →</span><small>MOVE THROUGH WORK</small><div>{showcaseProjects.map((project, i) => <button key={project.name} aria-label={`Show ${project.name}`} aria-current={i === activeProject ? 'true' : undefined} onClick={() => setActiveProject(i)} />)}</div></div></div>
+            <div className="showcase-bottomline"><span>FULL-STACK DEVELOPER</span><span>KATHMANDU, NEPAL</span><a href="mailto:kasamthapamagar7@gmail.com">SAY HELLO ↗</a></div>
           </div>
-          <figure className="portrait-figure" aria-label="A portrait of Kasam drawn with code characters">
-            <div className="portrait-figure-orbit" aria-hidden="true" />
-            <div className="portrait-glyph" aria-hidden="true">
-              {PORTRAIT_BITS.map((bit, i) => (
-                <span key={i} style={{
-                  top: `${(bit.r / PORTRAIT_ROWS) * 100}%`, left: `${(bit.c / PORTRAIT_COLS) * 100}%`,
-                  opacity: bit.op, '--portrait-alpha': bit.op,
-                } as CSSProperties}>{bit.ch}</span>
-              ))}
-            </div>
-            <figcaption><span>BIT BY BIT</span><b>KASAM / KTM</b><i>27° 43′ N</i></figcaption>
-          </figure>
         </section>
 
         <section className="work-section" id="work">
