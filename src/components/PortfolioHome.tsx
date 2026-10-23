@@ -76,7 +76,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         }
       })
     }, { root: scrollRoot, threshold: 0.18 })
-    document.querySelectorAll('.cb-pipeline, .education-flow, .critch-flow').forEach((flow) => flowObserver.observe(flow))
+    document.querySelectorAll('.cb-pipeline, .education-flow, .critch-flow, .portfolio-hero, .section-heading, .case-study, .about-body, .portfolio-footer').forEach((flow) => flowObserver.observe(flow))
     return () => { observer.disconnect(); flowObserver.disconnect(); window.clearInterval(clockTimer) }
   }, [])
 
@@ -132,7 +132,27 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
       </aside>
 
       <div className="portfolio-content">
-        <section className="portfolio-hero" id="home">
+        <section className="intro-experience" id="home" aria-labelledby="intro-title">
+          <div className="intro-grain" aria-hidden="true" />
+          <div className="intro-meta"><span><i /> INDEPENDENT DEVELOPER · KATHMANDU, NEPAL</span><span>27° 43′ N&nbsp;&nbsp; 85° 19′ E</span></div>
+          <div className="intro-main">
+            <div className="intro-copy">
+              <p className="intro-kicker">HELLO, WORLD. I’M KASAM.</p>
+              <h1 id="intro-title">I make<br />the <em>complex</em><br />feel clear<span>.</span></h1>
+              <p className="intro-description">Full-stack developer building thoughtful tools for people finding their way through code, education, and everything in between.</p>
+              <div className="intro-actions"><a href="#work" className="intro-primary">EXPLORE MY WORK <span>↘</span></a><a href="mailto:kasamthapamagar7@gmail.com" className="intro-contact">SAY HELLO ↗</a></div>
+            </div>
+            <div className="intro-object" aria-hidden="true">
+              <div className="intro-orbit intro-orbit-one" /><div className="intro-orbit intro-orbit-two" /><div className="intro-orbit intro-orbit-three" />
+              <div className="intro-monogram"><span>K</span><i>.</i></div>
+              <span className="intro-object-label">BUILD WITH<br />INTENTION</span>
+              <span className="intro-object-coordinate">NP / 01</span>
+            </div>
+          </div>
+          <div className="intro-bottom"><span>SOFTWARE WITH A HUMAN POINT OF VIEW</span><a href="#work"><span>SCROLL TO EXPLORE</span><i>↓</i></a><span>01 — 04 / INTRODUCTION</span></div>
+        </section>
+
+        <section className="portfolio-hero" id="work">
           <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to change projects. Press Enter to open the selected project.">
             <div className="showcase-grain" aria-hidden="true" />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
@@ -161,7 +181,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           </div>
         </section>
 
-        <section className="work-section" id="work">
+        <section className="work-section" id="case-studies">
           <div className="section-heading">
             <div><span className="section-index">A FEW THINGS I’VE BUILT</span><h2>Work with a reason to exist.</h2></div>
             <span className="section-count">01 — 03</span>
