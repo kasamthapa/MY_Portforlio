@@ -1,4 +1,4 @@
-import { useEffect, useState, type KeyboardEvent } from 'react'
+import { useEffect, useState, type KeyboardEvent, type PointerEvent } from 'react'
 
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
@@ -84,6 +84,16 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
   const handleGalleryKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowLeft') { event.preventDefault(); moveProject(-1) }
     if (event.key === 'ArrowRight') { event.preventDefault(); moveProject(1) }
+    const targetIsActiveCard = event.target instanceof Element && event.target.closest('.gallery-center') !== null
+    if (event.key === 'Enter' && (event.target === event.currentTarget || targetIsActiveCard)) {
+      event.preventDefault()
+      window.location.assign(showcaseProjects[activeProject].href)
+    }
+  }
+  const handleStagePointerMove = (event: PointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    event.currentTarget.style.setProperty('--light-x', `${((event.clientX - bounds.left) / bounds.width) * 100}%`)
+    event.currentTarget.style.setProperty('--light-y', `${((event.clientY - bounds.top) / bounds.height) * 100}%`)
   }
 
   return (
@@ -123,7 +133,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
 
       <div className="portfolio-content">
         <section className="portfolio-hero" id="home">
-          <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to change projects.">
+          <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to change projects. Press Enter to open the selected project.">
             <div className="showcase-grain" aria-hidden="true" />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
             <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
@@ -136,9 +146,9 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
                   return <button key={project.name} className={`gallery-card gallery-${position}`} onClick={() => setActiveProject(i)} aria-pressed={activeProject === i} aria-label={`${project.name}, ${project.kind}. Select project`}>
                     <div className={`project-window project-window-${project.target}`}>
                       <div className="window-bar"><span><i /><i /><i /></span><b>{project.name.toUpperCase()}</b><span>↗</span></div>
-                      {project.target === 'codebrain' && <div className="brain-preview"><div className="brain-files"><span>EXPLORER</span><b>⌄ &nbsp; REPOSITORY</b><i>⌞ &nbsp; src</i><i>⌞ &nbsp; routes</i><i>⌞ &nbsp; server</i><i>⌞ &nbsp; package.json</i></div><div className="brain-editor"><span>ASK YOUR CODEBASE</span><b>Where is this behavior defined?</b><i>⌕ &nbsp; searching the project</i><div className="brain-answer"><small>ANSWER · WITH SOURCE LINKS</small><p>Follow the explanation back to the code that supports it.</p><a>OPEN SOURCE &nbsp; ↗</a></div></div></div>}
-                      {project.target === 'sikshyanepal' && <div className="education-preview"><div className="education-preview-kicker">YOUR NEXT STEP, MADE CLEARER</div><b>Explore what<br />comes next.</b><div className="education-preview-path"><span>DISCOVER</span><i /><span>COMPARE</span><i /><span>PLAN</span></div><div className="education-preview-card"><small>RESEARCH PATH</small><div><i>01</i> Find programs <b>↗</b></div><div><i>02</i> Check official notices <b>↗</b></div><div><i>03</i> Save a next step <b>↗</b></div></div></div>}
-                      {project.target === 'critch' && <div className="critch-preview"><div className="critch-preview-sidebar"><small>REVIEW AREAS</small><b>01 &nbsp; Idea</b><span>02 &nbsp; Interface</span><span>03 &nbsp; Code</span><span>04 &nbsp; Docs</span></div><div className="critch-preview-main"><small>PROJECT REVIEW / 01</small><h4>Useful feedback<br />moves the work.</h4><div className="critch-preview-note"><b>THE IDEA</b><p>One clear thought to help the project improve.</p><span>↳ REPLY IN THREAD</span></div><div className="critch-preview-reply">Builder replies. The conversation continues.</div></div></div>}
+                      {project.target === 'codebrain' && <div className="poster-art poster-brain"><span className="poster-edition">01 / CODE INTELLIGENCE</span><div className="brain-orbit brain-orbit-a" /><div className="brain-orbit brain-orbit-b" /><div className="brain-network"><i /><i /><i /><i /><i /><i /><b>Q</b><span className="network-path network-path-one" /><span className="network-path network-path-two" /><span className="network-path network-path-three" /></div><div className="poster-wordmark">CODE<br /><em>BRAIN</em><i>.</i></div><div className="poster-footer"><span>ASK IN PLAIN LANGUAGE</span><span>TRACE IT TO SOURCE ↗</span></div></div>}
+                      {project.target === 'sikshyanepal' && <div className="poster-art poster-education"><span className="poster-edition">02 / A STUDENT FIELD GUIDE</span><div className="nepal-contours"><i /><i /><i /><i /><b>◦</b><span>27° 43′ N</span></div><div className="education-wordmark">Sikshya<br /><em>Nepal</em></div><div className="education-poster-path"><span>EXPLORE</span><i /><span>COMPARE</span><i /><span>PLAN</span></div><div className="poster-footer"><span>COLLEGE · PROGRAM · ADMISSION</span><span>FOLLOW YOUR NEXT STEP ↗</span></div></div>}
+                      {project.target === 'critch' && <div className="poster-art poster-critch"><span className="poster-edition">03 / PROJECT REVIEW</span><div className="critch-wordmark">CRIT<br /><em>CH.</em></div><div className="critch-poster-grid"><div><i>01</i><b>IDEA</b></div><div><i>02</i><b>INTERFACE</b></div><div><i>03</i><b>CODE</b></div><div><i>04</i><b>DOCS</b></div></div><div className="critch-note-stack"><div>ONE THOUGHT<br />WORTH KEEPING</div><i>↳ THREAD IT</i><b>A BETTER<br />NEXT STEP</b></div><div className="poster-footer"><span>PEER FEEDBACK</span><span>GIVE · RECEIVE · IMPROVE ↗</span></div></div>}
                     </div>
                     <span className="gallery-card-kind">{project.kind}</span>
                   </button>
