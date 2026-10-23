@@ -35,9 +35,19 @@ export default function TitleBar({ onMenuClick, onQuickOpen, onPortfolioClick }:
         <span className="sm:hidden truncate">kasam-portfolio</span>
       </div>
 
-      <button onClick={onPortfolioClick} className="w-24 lg:w-28 text-right text-[10px] hover:text-[var(--vs-text)] transition-colors">
-        ← Portfolio
-      </button>
+      <div className="flex items-center justify-end gap-3">
+        <a
+          href="https://github.com/kasamthapa/MY_Portforlio"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] text-[var(--vs-muted)] hover:text-[var(--vs-text)] transition-colors whitespace-nowrap"
+        >
+          Source ↗
+        </a>
+        <button onClick={onPortfolioClick} className="w-24 lg:w-28 text-right text-[10px] hover:text-[var(--vs-text)] transition-colors">
+          ← Portfolio
+        </button>
+      </div>
     </div>
   )
 }
