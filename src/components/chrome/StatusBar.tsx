@@ -19,7 +19,10 @@ interface Props {
 
 export default function StatusBar({ language, terminalOpen, theme, onToggleTerminal, onToggleTheme }: Props) {
   return (
-    <div className="h-6 shrink-0 flex items-center justify-between bg-[var(--vs-accent)] text-white text-[11px] px-2 select-none">
+    <div
+      className="h-6 shrink-0 flex items-center justify-between text-white text-[11px] px-2 select-none"
+      style={{ backgroundColor: 'var(--vs-accent)' }}
+    >
       <div className="flex items-center gap-3 min-w-0">
         <span className="flex items-center gap-1">
           <GitBranchIconLarge size={13} />

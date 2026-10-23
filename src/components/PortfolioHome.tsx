@@ -1,7 +1,17 @@
+import { useState, type CSSProperties } from 'react'
+import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
+
 const socials = [
   { label: 'GitHub', href: 'https://github.com/kasamthapa' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/kasamthapamagar' },
   { label: 'X', href: 'https://x.com/kasamthapa89' },
+]
+
+const codeBrainSteps = [
+  { title: 'Pick a repository', detail: 'Start with a public GitHub repository. CodeBrain filters out generated files and other noise before indexing.' },
+  { title: 'Map the code', detail: 'TypeScript and JavaScript are parsed into meaningful pieces—functions, classes, and imports—instead of arbitrary line ranges.' },
+  { title: 'Ask a question', detail: 'Your question is matched against the repository’s code so the response stays tied to the project you chose.' },
+  { title: 'Follow the sources', detail: 'Answers point back to files and line ranges, so you can inspect the code for yourself.' },
 ]
 
 interface Props {
@@ -9,6 +19,9 @@ interface Props {
 }
 
 export default function PortfolioHome({ onOpenEditor }: Props) {
+  const [activeStep, setActiveStep] = useState(0)
+  const [showTechnicalNotes, setShowTechnicalNotes] = useState(false)
+
   return (
     <main className="portfolio-home">
       <header className="portfolio-header">
@@ -38,10 +51,16 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
             <a className="text-link" href="mailto:kasamthapamagar7@gmail.com">Get in touch <span>↗</span></a>
           </div>
         </div>
-        <div className="portfolio-hero-note" aria-label="My approach">
-          <span className="note-index">A NOTE ON HOW I BUILD</span>
-          <p>Start with the real problem.<br />Make the next step obvious.<br />Show your work.</p>
-          <span className="note-signature">— Kasam</span>
+        <div className="portrait-figure" aria-label="A portrait drawn with code characters">
+          <div className="portrait-glyph" aria-hidden="true">
+            {PORTRAIT_BITS.map((bit, i) => (
+              <span key={i} style={{
+                top: `${(bit.r / PORTRAIT_ROWS) * 100}%`, left: `${(bit.c / PORTRAIT_COLS) * 100}%`,
+                opacity: bit.op, '--portrait-alpha': bit.op,
+              } as CSSProperties}>{bit.ch}</span>
+            ))}
+          </div>
+          <div className="portrait-figure-caption"><span>BUILT FROM BITS</span><b>KASAM / KTM</b><i>∞ 0001 1010</i></div>
         </div>
       </section>
 
@@ -52,32 +71,34 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         </div>
 
         <article className="work-card work-featured">
-          <div className="work-card-top"><span>01 / DEVELOPER TOOLS</span><span className="work-status"><i /> IN PROGRESS</span></div>
+          <div className="work-card-top"><span>01 / DEVELOPER TOOLS</span><span className="work-status"><i /> BUILDING IN PUBLIC</span></div>
           <div className="work-featured-grid">
             <div className="work-copy">
               <h3>CodeBrain</h3>
-              <p className="work-question">“What does this codebase actually do?”</p>
-              <p className="work-description">CodeBrain lets you ask questions about a GitHub project and get answers grounded in its code, with links to the files and lines behind them. It’s built to make an unfamiliar codebase less intimidating.</p>
+              <p className="work-question">“Where do I even start?”</p>
+              <p className="work-description">When you open a project you don’t know, finding the right file can take longer than understanding the problem. CodeBrain lets you ask a repository questions in plain language and follow answers back to the code that supports them.</p>
               <div className="work-actions">
                 <a className="button-solid" href="https://codebrain-gamma.vercel.app" target="_blank" rel="noopener noreferrer">Try CodeBrain <span>↗</span></a>
-                <a className="text-link" href="https://github.com/kasamthapa/codebrain" target="_blank" rel="noopener noreferrer">See the project code <span>↗</span></a>
+                <a className="text-link" href="https://github.com/kasamthapa/codebrain" target="_blank" rel="noopener noreferrer">Browse project source <span>↗</span></a>
               </div>
             </div>
             <div className="codebrain-explainer" aria-label="How CodeBrain works">
-              <div className="explainer-head"><span>HOW IT WORKS</span><span>IN THREE STEPS</span></div>
-              <div className="explainer-step"><span className="step-number">01</span><div><b>Choose a repository</b><small>Point CodeBrain at a public GitHub project.</small></div></div>
-              <div className="step-connector" />
-              <div className="explainer-step"><span className="step-number">02</span><div><b>Ask in plain language</b><small>No need to know where the answer lives.</small></div></div>
-              <div className="step-connector" />
-              <div className="explainer-step"><span className="step-number">03</span><div><b>Follow the answer back</b><small>See the source files and line references.</small></div></div>
+              <div className="explainer-head"><span>FROM QUESTION TO SOURCE</span><span>SELECT A STEP</span></div>
+              <div className="step-selector" role="group" aria-label="Choose a CodeBrain step">
+                {codeBrainSteps.map((step, i) => <button key={step.title} aria-pressed={activeStep === i} onClick={() => setActiveStep(i)}><span>0{i + 1}</span>{step.title}</button>)}
+              </div>
+              <div className="step-detail" aria-live="polite"><span>0{activeStep + 1} / 04</span><p>{codeBrainSteps[activeStep].detail}</p></div>
             </div>
           </div>
-          <div className="work-card-footer"><span>React</span><span>TypeScript</span><span>Node.js</span><span>PostgreSQL + pgvector</span><span>Retrieval augmented generation</span></div>
+          <button className="technical-toggle" aria-expanded={showTechnicalNotes} onClick={() => setShowTechnicalNotes((visible) => !visible)}>{showTechnicalNotes ? 'Hide' : 'For developers: how it’s built'} <span>{showTechnicalNotes ? '−' : '+'}</span></button>
+          {showTechnicalNotes && <div className="technical-notes"><p>Built without a framework for retrieval: AST-aware chunking with <code>@typescript-eslint/parser</code>, embeddings stored in PostgreSQL with <code>pgvector</code>, and cited answers generated through the Gemini API.</p><a href="https://github.com/kasamthapa/codebrain" target="_blank" rel="noopener noreferrer">Explore the implementation on GitHub ↗</a></div>}
+          <div className="work-card-footer"><span>React</span><span>TypeScript</span><span>Node.js</span><span>PostgreSQL + pgvector</span><span>Gemini API</span></div>
         </article>
 
         <div className="work-grid">
           <article className="work-card work-secondary">
             <div className="work-card-top"><span>02 / EDUCATION</span><span>NEPAL</span></div>
+            <div className="sikshya-art" aria-hidden="true"><span>STUDENT GUIDE</span><b>Find your<br />next step.</b><i>COLLEGES · PROGRAMS · NOTICES</i><small>↗</small></div>
             <h3>SikshyaNepal</h3>
             <p className="work-question">A clearer starting point for students.</p>
             <p className="work-description">Find colleges and programs, follow admissions and campus updates, and get practical student guides—all in one place, with links back to official sources.</p>
@@ -85,6 +106,7 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           </article>
           <article className="work-card work-secondary">
             <div className="work-card-top"><span>03 / DEVELOPER COMMUNITY</span><span>BUILT TOGETHER</span></div>
+            <div className="critch-art" aria-hidden="true"><span>PROJECT REVIEW / 01</span><b>Clear feedback,<br />made useful.</b><div><i /><i /><i /><i /></div><small>IDEA <span>INTERFACE</span> CODE <span>DOCS</span></small></div>
             <h3>Critch</h3>
             <p className="work-question">Feedback that gives you something to work with.</p>
             <p className="work-description">A place to share a developer project and get structured reviews on the idea, interface, code quality, and documentation.</p>
@@ -96,8 +118,8 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
       <section className="about-section" id="about">
         <div className="section-heading"><div><span className="section-index">A LITTLE CONTEXT</span><h2>About me</h2></div></div>
         <div className="about-body">
-          <p>I’m a full-stack developer based in Kathmandu, Nepal. I like working across the whole product: understanding the problem, shaping the experience, building the system, and making the details feel considered.</p>
-          <div className="about-facts"><span>Usually working with</span><p>TypeScript · React · Node.js · PostgreSQL</p><span>Interested in</span><p>Developer tools · useful AI · education</p></div>
+          <p>I’m a full-stack developer based in Kathmandu, Nepal. I learn by shipping real things, listening to how people use them, and improving the parts that get in the way. I care about the whole path—from the first question to the last small detail.</p>
+          <div className="about-facts"><span>What I’m building</span><p>CodeBrain · SikshyaNepal</p><span>Tools I reach for</span><p>TypeScript · React · Node.js · PostgreSQL</p><span>How I work</span><p>Start small. Explain the tradeoffs. Keep learning.</p></div>
         </div>
       </section>
 
