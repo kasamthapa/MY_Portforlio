@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type WheelEvent as WheelEventType } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
 import { PORTRAIT_BITS, PORTRAIT_COLS, PORTRAIT_ROWS } from '../data/portraitBits'
 
 const socials = [
@@ -97,11 +97,11 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
   const [activeSection, setActiveSection] = useState('home')
   const [monochrome, setMonochrome] = useState(false)
   const [clock, setClock] = useState('')
-  const [storyProject, setStoryProject] = useState<number | null>(null)
+  const [flippedProject, setFlippedProject] = useState<number | null>(null)
   const [dragging, setDragging] = useState(false)
-  const dragState = useRef<{ x: number; y: number; pointerId: number; moved: boolean; cardIndex: number | null } | null>(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const dragState = useRef<{ x: number; scrollLeft: number; pointerId: number; moved: boolean; captured: boolean } | null>(null)
   const suppressClick = useRef(0)
-  const storyTrack = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const updateClock = () => setClock(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kathmandu', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()))
@@ -132,39 +132,40 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
     return () => { observer.disconnect(); flowObserver.disconnect(); window.clearInterval(clockTimer) }
   }, [])
 
-  useEffect(() => {
-    if (storyProject === null) return
-    const previousOverflow = document.body.style.overflow
-    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    const inertRoots = [document.querySelector<HTMLElement>('.portfolio-rail'), document.querySelector<HTMLElement>('.portfolio-content')].filter((node): node is HTMLElement => node !== null)
-    inertRoots.forEach((node) => { node.inert = true })
-    document.body.style.overflow = 'hidden'
-    storyTrack.current?.scrollTo({ left: 0, behavior: 'auto' })
-    const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') setStoryProject(null)
-      if (event.key === 'ArrowRight') storyTrack.current?.scrollBy({ left: storyTrack.current.clientWidth, behavior: 'smooth' })
-      if (event.key === 'ArrowLeft') storyTrack.current?.scrollBy({ left: -storyTrack.current.clientWidth, behavior: 'smooth' })
-      if (event.key === 'Tab') {
-        const controls = Array.from(document.querySelectorAll<HTMLElement>('.project-film button:not([disabled]), .project-film a[href]'))
-        const first = controls[0], last = controls[controls.length - 1]
-        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
-        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
-      }
-    }
-    document.querySelector<HTMLElement>('.film-screenline button')?.focus()
-    window.addEventListener('keydown', onKeyDown)
-    return () => { document.body.style.overflow = previousOverflow; inertRoots.forEach((node) => { node.inert = false }); window.removeEventListener('keydown', onKeyDown); previousFocus?.focus() }
-  }, [storyProject])
-
-  const moveProject = (direction: number) => setActiveProject((current) => (current + direction + showcaseProjects.length) % showcaseProjects.length)
+  const scrollToProject = (index: number, behavior: ScrollBehavior = 'smooth') => {
+    const carousel = carouselRef.current
+    const card = carousel?.querySelector<HTMLElement>(`[data-project-index="${index}"]`)
+    if (!carousel || !card) return
+    carousel.scrollTo({ left: card.offsetLeft + card.offsetWidth / 2 - carousel.clientWidth / 2, behavior })
+    setActiveProject(index)
+  }
+  const moveProject = (direction: number) => {
+    const next = (activeProject + direction + showcaseProjects.length) % showcaseProjects.length
+    setFlippedProject(null)
+    scrollToProject(next)
+  }
+  const handleCarouselScroll = () => {
+    const carousel = carouselRef.current
+    if (!carousel) return
+    const center = carousel.getBoundingClientRect().left + carousel.clientWidth / 2
+    let nearest = 0
+    let distance = Number.POSITIVE_INFINITY
+    carousel.querySelectorAll<HTMLElement>('.gallery-card').forEach((card) => {
+      const bounds = card.getBoundingClientRect()
+      const nextDistance = Math.abs(bounds.left + bounds.width / 2 - center)
+      if (nextDistance < distance) { nearest = Number(card.dataset.projectIndex); distance = nextDistance }
+    })
+    setActiveProject(nearest)
+  }
   const handleGalleryKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowLeft') { event.preventDefault(); moveProject(-1) }
     if (event.key === 'ArrowRight') { event.preventDefault(); moveProject(1) }
     const targetIsActiveCard = event.target instanceof Element && event.target.closest('.gallery-center') !== null
     if (event.key === 'Enter' && (event.target === event.currentTarget || targetIsActiveCard)) {
       event.preventDefault()
-      setStoryProject(activeProject)
+      setFlippedProject((current) => current === activeProject ? null : activeProject)
     }
+    if (event.key === 'Escape') setFlippedProject(null)
   }
   const handleStagePointerMove = (event: PointerEvent<HTMLElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -180,41 +181,32 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
     }
   }
   const handleDeckPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLElement).closest('button.gallery-arrow')) return
-    const card = (event.target as HTMLElement).closest<HTMLElement>('.gallery-card')
-    event.currentTarget.setPointerCapture(event.pointerId)
-    dragState.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, moved: false, cardIndex: card ? Number(card.dataset.projectIndex) : null }
-    event.currentTarget.style.setProperty('--drag-x', '0px')
+    if (event.pointerType !== 'mouse' || event.button !== 0 || (event.target as HTMLElement).closest('button.gallery-arrow')) return
+    dragState.current = { x: event.clientX, scrollLeft: event.currentTarget.scrollLeft, pointerId: event.pointerId, moved: false, captured: false }
   }
   const handleDeckPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const start = dragState.current
     if (!start || start.pointerId !== event.pointerId) return
     const dx = event.clientX - start.x
-    if (Math.abs(dx) > 6) { start.moved = true; setDragging(true); event.currentTarget.style.setProperty('--drag-x', `${dx}px`) }
+    if (Math.abs(dx) > 5) {
+      start.moved = true
+      if (!start.captured) { event.currentTarget.setPointerCapture(event.pointerId); start.captured = true }
+      setDragging(true)
+      event.currentTarget.scrollLeft = start.scrollLeft - dx
+    }
   }
   const handleDeckPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = dragState.current
     if (!start || start.pointerId !== event.pointerId) return
-    const dx = event.clientX - start.x
-    if (start.moved) {
-      suppressClick.current = Date.now() + 180
-    }
-    if (Math.abs(dx) > 48) {
-      const hops = Math.min(2, Math.max(1, Math.floor(Math.abs(dx) / 230)))
-      moveProject((dx < 0 ? 1 : -1) * hops)
-    } else if (!start.moved && start.cardIndex !== null) {
-      suppressClick.current = Date.now() + 180
-      openStory(start.cardIndex)
-    }
-    event.currentTarget.style.setProperty('--drag-x', '0px')
+    if (start.moved) suppressClick.current = Date.now() + 260
     setDragging(false)
     dragState.current = null
   }
-  const handleDeckWheel = (event: WheelEventType<HTMLDivElement>) => {
+  const handleDeckWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX) && !event.shiftKey) return
     const delta = event.shiftKey ? event.deltaY : event.deltaX
-    if (Math.abs(delta) > 12) { event.preventDefault(); moveProject(delta > 0 ? 1 : -1) }
+    if (Math.abs(delta) > 2) { event.preventDefault(); event.currentTarget.scrollBy({ left: delta, behavior: 'auto' }) }
   }
-  const openStory = (index: number) => { setActiveProject(index); setStoryProject(index) }
 
   return (
     <main className="portfolio-home">
@@ -277,17 +269,19 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
         </section>
 
         <section className="portfolio-hero" id="work">
-            <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%'); const card = event.currentTarget.querySelector<HTMLElement>('.gallery-center'); card?.style.setProperty('--tilt-x', '0deg'); card?.style.setProperty('--tilt-y', '0deg') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to change projects. Press Enter to open the selected project.">
+            <div className={`showcase-stage${monochrome ? ' is-mono' : ''}`} onKeyDown={handleGalleryKeyDown} onPointerMove={handleStagePointerMove} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--light-x', '50%'); event.currentTarget.style.setProperty('--light-y', '42%'); const card = event.currentTarget.querySelector<HTMLElement>('.gallery-center'); card?.style.setProperty('--tilt-x', '0deg'); card?.style.setProperty('--tilt-y', '0deg') }} tabIndex={0} aria-label="Interactive project gallery. Use left and right arrow keys to browse. Press Enter or select a card to flip its brief description.">
             <div className="showcase-grain" aria-hidden="true" />
             <div className="showcase-topline"><span className="showcase-system"><i /> KASAM / WORKSPACE</span><span className="showcase-clock">{clock} <i>·</i> KTM</span><div className="showcase-tools"><button className="mono-toggle" aria-pressed={monochrome} onClick={() => setMonochrome((value) => !value)}><i /> B&W <b>{monochrome ? 'ON' : 'OFF'}</b></button><button onClick={onOpenEditor} className="showcase-source">&lt;/&gt; SOURCE</button></div></div>
             <div className="showcase-intro"><span>SELECTED WORK / 2024—26</span><p>Small tools for the moment you feel stuck.</p></div>
-            <div className={`showcase-carousel${dragging ? ' is-dragging' : ''}`} aria-label="Project carousel. Drag left or right, swipe, scroll, or use the arrow buttons to browse." onPointerDown={handleDeckPointerDown} onPointerMove={handleDeckPointerMove} onPointerUp={handleDeckPointerUp} onLostPointerCapture={(event) => { if (dragState.current?.pointerId === event.pointerId) { dragState.current = null; setDragging(false) } }} onPointerCancel={(event) => { event.currentTarget.style.setProperty('--drag-x', '0px'); dragState.current = null; setDragging(false) }} onWheel={handleDeckWheel}>
+            <div ref={carouselRef} className={`showcase-carousel${dragging ? ' is-dragging' : ''}`} aria-label="Project carousel. Drag horizontally with a mouse, swipe with a finger, scroll, or use the arrow buttons to browse." onScroll={handleCarouselScroll} onPointerDown={handleDeckPointerDown} onPointerMove={handleDeckPointerMove} onPointerUp={handleDeckPointerUp} onLostPointerCapture={(event) => { if (dragState.current?.pointerId === event.pointerId) { dragState.current = null; setDragging(false) } }} onPointerCancel={() => { dragState.current = null; setDragging(false) }} onWheel={handleDeckWheel}>
               <button className="gallery-arrow gallery-previous" aria-label="Previous project" onClick={() => moveProject(-1)}>←</button>
               <div className="gallery-deck">
                 {showcaseProjects.map((project, i) => {
                   const relative = (i - activeProject + showcaseProjects.length) % showcaseProjects.length
                   const position = relative === 0 ? 'center' : relative === 1 ? 'right' : relative === showcaseProjects.length - 1 ? 'left' : 'far'
-                  return <button key={project.name} data-project-index={i} className={`gallery-card gallery-${position}`} onClick={() => { if (Date.now() < suppressClick.current) return; openStory(i) }} aria-pressed={activeProject === i} aria-label={`Open ${project.name} project story, ${project.kind}`}>
+                  return <button key={project.name} data-project-index={i} className={`gallery-card gallery-${position}${flippedProject === i ? ' is-flipped' : ''}`} onClick={() => { if (Date.now() < suppressClick.current) return; if (i !== activeProject) scrollToProject(i); setFlippedProject((current) => current === i ? null : i) }} aria-pressed={flippedProject === i} aria-label={`${project.name}, ${flippedProject === i ? 'brief description shown; activate to return to artwork' : 'activate to see brief description'}`}>
+                    <div className="gallery-card-inner">
+                    <div className="gallery-card-face gallery-card-front">
                     <div className={`project-window project-window-${project.target}`}>
                       <div className="window-bar"><span><i /><i /><i /></span><b>{project.name.toUpperCase()}</b><span>↗</span></div>
                       {project.target === 'codebrain' && <div className="poster-art poster-brain"><div className="mock-kicker"><span>AI CODEBASE GUIDE</span><i>01 / 04</i></div><h2 className="mock-title">Understand<br /><em>the code.</em></h2><div className="mock-terminal"><div className="mock-terminal-top"><i /><i /><i /><span>codebrain — /usr/bin/env</span></div><div className="mock-terminal-copy"><small>loaded. paste a repository to begin.</small><b><i>›</i> codebrain --init</b><strong>Code<span>Brain</span></strong><div className="mock-prompt"><span>repo&gt;</span> github.com/…</div></div></div><div className="mock-footnote"><span>ASK → TRACE → UNDERSTAND</span><span>↗ 01</span></div></div>}
@@ -296,12 +290,22 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
                       {project.target === 'rapporteur' && <div className="poster-art poster-rapporteur"><div className="mock-kicker"><span>MEETING / RECEIPTS</span><i>04 / 04</i></div><h2 className="mock-title">Notes that<br /><em>show their work.</em></h2><div className="rapporteur-note"><div className="rapporteur-note-top"><b>ILLUSTRATIVE EXAMPLE</b><span>AGENDA · TRANSCRIPT</span></div><div className="rapporteur-agenda"><small>01 / AGENDA ITEM</small><b>DECISION</b><p>Decision summary, linked to its source.</p><span>↳ SOURCE LINE · QUOTE CHECK</span></div><div className="rapporteur-agenda is-off"><small>OFF AGENDA</small><b>FOLLOW-UP</b><p>Action item kept outside the agenda.</p><span>↳ SOURCE LINE · REVIEW</span></div></div><div className="mock-footnote"><span>CLAIM → QUOTE → SOURCE LINE</span><span>↗ 04</span></div></div>}
                     </div>
                     <span className="gallery-card-kind">{project.kind}</span>
+                    </div>
+                    <div className="gallery-card-face gallery-card-back">
+                      <span className="flip-overline">PROJECT NOTE&nbsp; / &nbsp;{String(i + 1).padStart(2, '0')}</span>
+                      <span className="flip-title">{project.name}<i>.</i></span>
+                      <span className="flip-note">{project.note}</span>
+                      <span className="flip-rule" aria-hidden="true"><i /><i /><i /><i /></span>
+                      <span className="flip-sequence" aria-label={project.stages.join(' then ')}>{project.stages.slice(0, 3).map((stage, step) => <span key={stage}><i>0{step + 1}</i>{stage.split(' ').slice(0, 2).join(' ')}</span>)}</span>
+                      <span className="flip-return">TAP OR CLICK TO RETURN <b>↻</b></span>
+                    </div>
+                    </div>
                   </button>
                 })}
               </div>
               <button className="gallery-arrow gallery-next" aria-label="Next project" onClick={() => moveProject(1)}>→</button>
             </div>
-            <div className="showcase-caption"><div className="showcase-selected"><span>{String(activeProject + 1).padStart(2, '0')} / {String(showcaseProjects.length).padStart(2, '0')} · {showcaseProjects[activeProject].kind}</span><h1>{showcaseProjects[activeProject].name}<i>.</i></h1><p>{showcaseProjects[activeProject].note}</p></div><div className="showcase-actions"><a className="showcase-open" href={showcaseProjects[activeProject].href} target="_blank" rel="noopener noreferrer">OPEN PROJECT <span>↗</span></a><button className="showcase-case-link" onClick={() => openStory(activeProject)}>ENTER PROJECT ↗</button></div><div className="showcase-hint"><span>← → / SWIPE</span><small>MOVE THROUGH WORK</small><div>{showcaseProjects.map((project, i) => <button key={project.name} aria-label={`Show ${project.name}`} aria-current={i === activeProject ? 'true' : undefined} onClick={() => setActiveProject(i)} />)}</div></div></div>
+            <div className="showcase-caption"><div className="showcase-selected"><span>{String(activeProject + 1).padStart(2, '0')} / {String(showcaseProjects.length).padStart(2, '0')} · {showcaseProjects[activeProject].kind}</span><h1>{showcaseProjects[activeProject].name}<i>.</i></h1><p>{showcaseProjects[activeProject].note}</p></div><div className="showcase-actions"><a className="showcase-open" href={showcaseProjects[activeProject].href} target="_blank" rel="noopener noreferrer">OPEN PROJECT <span>↗</span></a><button className="showcase-case-link" aria-pressed={flippedProject === activeProject} onClick={() => setFlippedProject((current) => current === activeProject ? null : activeProject)}>{flippedProject === activeProject ? 'RETURN TO ART ↻' : 'FLIP FOR A NOTE ↻'}</button></div><div className="showcase-hint"><span>← → / SWIPE</span><small>DRAG TO MOVE · FLIP TO READ</small><div>{showcaseProjects.map((project, i) => <button key={project.name} aria-label={`Show ${project.name}`} aria-current={i === activeProject ? 'true' : undefined} onClick={() => { setFlippedProject(null); scrollToProject(i) }} />)}</div></div></div>
             <div className="showcase-bottomline"><span>FULL-STACK DEVELOPER</span><span>KATHMANDU, NEPAL</span><a href="mailto:kasamthapamagar7@gmail.com">SAY HELLO ↗</a></div>
           </div>
         </section>
@@ -366,12 +370,9 @@ export default function PortfolioHome({ onOpenEditor }: Props) {
           <div className="footer-right"><span className="contact-index">KASAM / KTM&nbsp; · &nbsp;27° 43′ N</span><button className="source-switch" onClick={onOpenEditor}><span className="source-glyph">&lt;/&gt;</span> Explore source view</button><span>Thoughtful systems. Useful details.</span></div>
         </footer>
       </div>
-      {storyProject !== null && <ProjectStory project={showcaseProjects[storyProject]} index={storyProject} count={showcaseProjects.length} trackRef={storyTrack} onClose={() => setStoryProject(null)} onMove={(delta) => { const next = (storyProject + delta + showcaseProjects.length) % showcaseProjects.length; setStoryProject(next); setActiveProject(next) }} />}
     </main>
   )
 }
-
-type ShowcaseProject = (typeof showcaseProjects)[number]
 
 function TraceMap({ target, compact = false }: { target: string; compact?: boolean }) {
   const mapRef = useRef<HTMLDivElement>(null)
@@ -429,59 +430,5 @@ function TraceMap({ target, compact = false }: { target: string; compact?: boole
     </div>
     <div className="trace-story" aria-live="polite" key={`${target}-${step}`}><span>0{step + 1} / 0{trace.steps.length}</span><div><h5>{current.title}</h5><p>{current.detail}</p></div><div className="trace-controls"><button onClick={() => move(-1)} aria-label="Previous system step">←</button><button onClick={() => setPlaying((value) => !value)} aria-label={playing ? 'Pause system flow' : 'Play system flow'}>{playing ? 'Ⅱ' : '▶'}</button><button onClick={() => move(1)} aria-label="Next system step">→</button></div></div>
     <div className="trace-step-nav" aria-label="Choose a system step">{trace.steps.map((item, i) => <button key={item.title} className={step === i ? 'is-active' : ''} onClick={() => { setStep(i); if (!reduceMotion) setPlaying(false) }} aria-current={step === i ? 'step' : undefined}><span>0{i + 1}</span><b>{item.title}</b></button>)}</div>
-  </div>
-}
-
-function ProjectStory({ project, index, count, trackRef, onClose, onMove }: { project: ShowcaseProject; index: number; count: number; trackRef: { current: HTMLDivElement | null }; onClose: () => void; onMove: (delta: number) => void }) {
-  const handleWheel = (event: WheelEventType<HTMLDivElement>) => {
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
-    if (Math.abs(delta) > 3) { event.preventDefault(); event.currentTarget.scrollBy({ left: delta, behavior: 'auto' }) }
-  }
-  const [panel, setPanel] = useState(0)
-  useEffect(() => {
-    const track = trackRef.current
-    if (!track) return
-    const update = () => {
-      const next = Math.round(track.scrollLeft / track.clientWidth)
-      setPanel(next)
-      track.querySelectorAll<HTMLElement>('.film-panel').forEach((chapter, chapterIndex) => { chapter.inert = chapterIndex !== next })
-    }
-    update()
-    track.addEventListener('scroll', update, { passive: true })
-    return () => track.removeEventListener('scroll', update)
-  }, [trackRef, project])
-  const previousPanel = () => trackRef.current?.scrollBy({ left: -trackRef.current.clientWidth, behavior: 'smooth' })
-  const nextPanel = () => trackRef.current?.scrollBy({ left: trackRef.current.clientWidth, behavior: 'smooth' })
-  return <div className="project-film-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
-    <section className="project-film" role="dialog" aria-modal="true" aria-labelledby="film-title">
-      <div className="film-screenline"><span><i /> PROJECT FILE / {String(index + 1).padStart(2, '0')}</span><span>KASAM / KTM&nbsp; · &nbsp;{project.kicker}</span><button onClick={onClose} aria-label="Close project story">CLOSE <b>×</b></button></div>
-      <div ref={trackRef} className="project-film-track" role="region" aria-label="Horizontal project story chapters" tabIndex={0} onWheel={handleWheel}>
-        <article className={`film-panel film-opening film-${project.target}`}>
-          <div className="film-copy"><span className="film-overline">{project.kicker} / {String(index + 1).padStart(2, '0')}</span><h2 id="film-title">{project.name}<i>.</i></h2><p>{project.note}</p><div className="film-open-links"><a href={project.href} target="_blank" rel="noopener noreferrer">VISIT LIVE PROJECT ↗</a>{project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">SOURCE ON GITHUB ↗</a>}</div><div className="film-prompt"><span>THE IDEA</span><b>{project.problem}</b></div></div>
-          <div className="film-art" aria-label={`${project.name} project interface illustration`}>
-            <div className="film-art-ruler"><span>FIG. {String(index + 1).padStart(2, '0')}</span><span>BUILT WITH INTENT</span></div>
-            {project.target === 'codebrain' && <div className="film-ui brain-ui"><div className="film-ui-bar"><b>⌘ &nbsp;CODEBRAIN</b><span>REPOSITORY GUIDE</span><i>● ● ●</i></div><div className="brain-ui-body"><small>LOADED. PASTE A REPOSITORY TO BEGIN.</small><h3>Understand<br />the code.</h3><div className="brain-terminal"><span>› &nbsp;codebrain --init</span><hr /><b>ASK A QUESTION ABOUT YOUR REPO</b><div>repo&gt; github.com/your/project <i>↵</i></div></div><div className="brain-result"><span>ANSWER / SOURCE INCLUDED</span><p>Relevant code, explained in plain language.</p><small>OPEN THE MATCHING FILE <b>↗</b></small></div><footer>ASK&nbsp; → &nbsp;TRACE&nbsp; → &nbsp;UNDERSTAND</footer></div></div>}
-            {project.target === 'sikshyanepal' && <div className="film-ui education-ui"><div className="film-ui-bar"><b>SIKSHYANEPAL</b><span>STUDENT FIELD GUIDE</span><i>↗</i></div><div className="education-ui-body"><small>FOR WHAT COMES AFTER SCHOOL</small><h3>+2 done.<br /><em>Now what?</em></h3><p>Find what to study next, and where.</p><div className="education-search">⌕ &nbsp; e.g. BCA colleges in Kathmandu <b>SEARCH&nbsp; →</b></div><div className="education-tags"><span>IT &amp; COMPUTING</span><span>MANAGEMENT</span><span>HUMANITIES</span></div><div className="education-source"><small>LATEST NOTICE</small><b>Admissions &amp; results, in one place.</b><i>VIEW OFFICIAL SOURCE ↗</i></div></div></div>}
-            {project.target === 'critch' && <div className="film-ui critch-ui"><div className="film-ui-bar"><b>CRITCH <i>.</i></b><span>COMMUNITY / EXPLORE</span><i>⌕</i></div><div className="critch-ui-body"><small>SHARE WORK. GET SPECIFIC.</small><h3>Projects<br /><em>in progress.</em></h3><div className="critch-project"><span>PROJECT / 001</span><b>MAKE<br />SOMETHING<br />MATTER.</b><i>IDEA · UI · CODE · DOCS</i></div><footer>POST A PROJECT&nbsp;&nbsp; +</footer></div></div>}
-            {project.target === 'rapporteur' && <div className="film-ui rapporteur-ui"><div className="film-ui-bar"><b>RAPPORTEUR</b><span>ILLUSTRATIVE EXAMPLE</span><i>≡</i></div><div className="rapporteur-ui-body"><div className="rapporteur-agenda-label"><span>01 / AGENDA ITEM</span><i>DECISION</i></div><h3>Decision summary<br />with its source.</h3><div className="rapporteur-quote">The summary sits beside the matching transcript line, so a reader can check the words in context.<b>— EXAMPLE TRANSCRIPT LINE</b></div><div className="rapporteur-verified"><i>✓</i><span>QUOTE CHECK</span><b>OPEN SOURCE LINE ↗</b></div><footer>CLAIM&nbsp; · &nbsp;QUOTE&nbsp; · &nbsp;CONTEXT</footer></div></div>}
-            <div className="film-art-caption"><span>{project.name.toUpperCase()} / LIVE INTERFACE STUDY</span><span>SCROLL TO READ →</span></div>
-          </div>
-          <span className="film-next-cue">01 — THE PROJECT <b>SCROLL →</b></span>
-        </article>
-        <article className="film-panel film-process">
-          <div className="film-copy"><span className="film-overline">02 / HOW IT WORKS</span><h2>Follow the<br /><em>real path.</em></h2><p>{project.approach}</p><div className="film-prompt"><span>WHY THIS APPROACH</span><b>Each step gives the person using it something concrete to check or act on.</b></div></div>
-          <TraceMap target={project.target} compact />
-          <span className="film-next-cue">02 — THE METHOD <b>SCROLL →</b></span>
-        </article>
-        <article className="film-panel film-proof">
-          <div className="film-copy"><span className="film-overline">03 / WHAT IT DOES — AND DOESN’T — PROMISE</span><h2>Useful.<br /><em>With receipts.</em></h2><p>{project.detail}</p><div className="film-prompt film-limits"><span>HONEST LIMIT</span><b>{project.limit}</b></div></div>
-          <div className="film-proof-art"><div className="proof-sheet"><div className="proof-sheet-top"><span>PROJECT NOTES / {project.name.toUpperCase()}</span><span>VERIFIED CONTEXT</span></div><div className="proof-quote"><span>THE CLAIM</span><b>{project.stages[0]}<br />→ {project.stages[project.stages.length - 1]}</b></div><div className="proof-link"><i>↳</i><span>What connects the two?</span><b>THE SOURCE / THE DECISION / THE PERSON</b></div><div className="proof-sheet-footer"><span>BUILT FOR PEOPLE, NOT JUST THE DEMO</span><span>END NOTES · {String(index + 1).padStart(2, '0')}</span></div></div><div className="film-stack-label"><small>TOOLS &amp; MATERIALS</small><p>{project.stack}</p></div></div>
-          <span className="film-next-cue">03 — THE DETAILS <b>SCROLL →</b></span>
-        </article>
-        <article className="film-panel film-end">
-          <div className="film-end-mark">K<span>.</span></div><span className="film-overline">END OF FILE / {String(index + 1).padStart(2, '0')}</span><h2>{project.name}<i>.</i></h2><p>{project.note}</p><div className="film-end-actions"><a href={project.href} target="_blank" rel="noopener noreferrer">VISIT THE LIVE PROJECT ↗</a>{project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">READ THE SOURCE ↗</a>}<button onClick={() => { trackRef.current?.scrollTo({ left: 0, behavior: 'smooth' }) }}>REPLAY STORY ↶</button></div><div className="film-end-nav"><button onClick={() => onMove(-1)}>← PREVIOUS PROJECT</button><span>{String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}</span><button onClick={() => onMove(1)}>NEXT PROJECT →</button></div></article>
-      </div>
-      <div className="film-footer"><button onClick={previousPanel} aria-label="Previous story panel">←</button><div className="film-progress" aria-label={`Panel ${panel + 1} of 4`}>{[0, 1, 2, 3].map((n) => <button key={n} className={panel === n ? 'is-active' : ''} aria-label={`Go to story panel ${n + 1}`} onClick={() => trackRef.current?.scrollTo({ left: (trackRef.current?.clientWidth ?? 0) * n, behavior: 'smooth' })} />)}</div><span>{String(panel + 1).padStart(2, '0')} / 04</span><button onClick={nextPanel} aria-label="Next story panel">→</button></div>
-    </section>
   </div>
 }
