@@ -98,7 +98,7 @@ function Preview() {
           <p className="hero-summary">I’m Kasam. I build useful software for two moments of uncertainty: opening a codebase you don’t know, and figuring out where your education could take you.</p>
           <div className="hero-actions">
             <a href="https://codebrain-gamma.vercel.app" target="_blank" rel="noopener noreferrer" className="hero-primary">Explore CodeBrain <span>↗</span></a>
-            <a href="mailto:kasamthapamagar7@gmail.com" className="hero-secondary">Let’s talk <span>↗</span></a>
+            <a href="mailto:kasamthapa89@gmail.com" className="hero-secondary">Let’s talk <span>↗</span></a>
           </div>
           <div className="hero-socials">
             {LINKS.map((link) => (

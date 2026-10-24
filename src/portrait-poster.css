@@ -1,0 +1,237 @@
+/* Kasam's portrait sleeve. Import after index.css so these rules replace the old paper print. */
+.intro-portrait-center {
+  gap: 0;
+}
+
+.intro-object {
+  position: relative;
+  display: block;
+  width: clamp(220px, min(17vw, 30svh), 260px);
+  min-width: 0;
+  aspect-ratio: .65;
+  margin: 0;
+  opacity: 1;
+  filter: none;
+  transform: none;
+  animation: none;
+}
+
+.intro-portrait-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(235, 235, 229, .58);
+  border-radius: 5px;
+  background: #171716;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, .48), 0 0 0 3px rgba(236, 236, 230, .045);
+  filter: none;
+  -webkit-mask-image: url('/torn-photo-mask.png');
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: url('/torn-photo-mask.png');
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  mask-mode: alpha;
+  clip-path: none;
+  transform: none;
+  isolation: isolate;
+  container-type: inline-size;
+}
+
+.intro-portrait-card::before,
+.intro-portrait-card::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+}
+
+.intro-portrait-card::before {
+  z-index: 6;
+  border: 2px solid rgba(235, 235, 229, .18);
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(236, 236, 230, .11), transparent 2.5%, transparent 97.5%, rgba(236, 236, 230, .13));
+  box-shadow: inset 0 0 0 3px rgba(14, 14, 14, .28), inset 0 0 25px rgba(0, 0, 0, .33);
+}
+
+.intro-portrait-card::after {
+  z-index: 7;
+  border: 0;
+  background:
+    linear-gradient(0deg, rgba(226, 226, 219, .15), transparent 1%, transparent 99%, rgba(226, 226, 219, .13)),
+    repeating-linear-gradient(0deg, transparent 0 19px, rgba(247, 247, 239, .08) 19px 20px, transparent 20px 38px);
+  mix-blend-mode: screen;
+  opacity: .45;
+}
+
+.intro-poster-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  background: #1d1d1b;
+  -webkit-mask: none;
+  mask: none;
+  clip-path: none;
+}
+
+.intro-poster-image img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(1) contrast(1.14) brightness(.88);
+  transform: none;
+}
+
+.intro-poster-image::before,
+.intro-poster-image::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+}
+
+.intro-poster-image::before {
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .18), transparent 24%, transparent 63%, rgba(0, 0, 0, .37));
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+.intro-poster-image::after {
+  z-index: 2;
+  background: radial-gradient(ellipse at 50% 41%, transparent 36%, rgba(0, 0, 0, .25) 100%);
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+.intro-poster-masthead {
+  position: absolute;
+  z-index: 4;
+  top: 3.1%;
+  right: 5%;
+  left: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2.1%;
+  border-bottom: 1px solid rgba(244, 244, 239, .73);
+  color: #f5f5f1;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .78);
+}
+
+.intro-poster-masthead span {
+  font: 600 2.15cqw/1 'IBM Plex Mono', monospace;
+  letter-spacing: .08em;
+}
+
+.intro-poster-masthead strong {
+  margin-top: .4%;
+  font: 400 6.5cqw/.94 'Bodoni Moda', 'Instrument Serif', Georgia, serif;
+  letter-spacing: -.075em;
+}
+
+.intro-poster-title {
+  position: absolute;
+  z-index: 3;
+  top: 20%;
+  left: 50%;
+  width: 120%;
+  color: #d2b77f;
+  font: 400 40cqw/.82 'Bodoni Moda', 'Instrument Serif', Georgia, serif;
+  letter-spacing: -.12em;
+  text-align: center;
+  text-shadow: none;
+  white-space: nowrap;
+  mix-blend-mode: screen;
+  transform: translateX(-50%) scaleX(.76);
+  transform-origin: center;
+  -webkit-mask-image: repeating-linear-gradient(177deg, #000 0 2px, rgba(0, 0, 0, .68) 2px 2.7px, #000 2.7px 7px);
+  mask-image: repeating-linear-gradient(177deg, #000 0 2px, rgba(0, 0, 0, .68) 2px 2.7px, #000 2.7px 7px);
+}
+
+.intro-poster-stamps {
+  position: absolute;
+  z-index: 4;
+  right: 5%;
+  bottom: 3.7%;
+  left: 5%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 3%;
+  color: #f1f1ed;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .85);
+}
+
+.intro-poster-vhs {
+  width: fit-content;
+  padding: .45cqw .8cqw .15cqw;
+  border: 1px solid #f1f1ed;
+  background: #f1f1ed;
+  color: #151515;
+  font: 700 5.9cqw/.9 Georgia, serif;
+  letter-spacing: -.07em;
+  text-shadow: none;
+}
+
+.intro-poster-date {
+  padding-bottom: .3cqw;
+  font: 500 2.6cqw/1 'IBM Plex Mono', monospace;
+  letter-spacing: -.045em;
+  white-space: nowrap;
+}
+
+.intro-poster-seal {
+  position: relative;
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 18cqw;
+  height: 7cqw;
+  border: 1.5px solid #f1f1ed;
+  border-radius: 50%;
+}
+
+.intro-poster-seal::before,
+.intro-poster-seal::after {
+  position: absolute;
+  content: '';
+  border: 1px solid rgba(241, 241, 237, .94);
+  border-radius: 50%;
+}
+
+.intro-poster-seal::before { inset: 10% 20%; }
+.intro-poster-seal::after { inset: 5% 38%; }
+.intro-poster-seal i { z-index: 1; font: 700 2.5cqw/1 Georgia, serif; font-style: normal; }
+
+.intro-poster-static {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(8, 8, 8, .29) 0 1px, transparent 1px 4px),
+    radial-gradient(rgba(245, 245, 239, .29) .55px, transparent .85px);
+  background-size: auto, 4px 5px;
+  mix-blend-mode: overlay;
+  opacity: .4;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .intro-object { width: clamp(146px, 48vw, 210px); }
+  .intro-portrait-stage { column-gap: clamp(5px, 1.8vw, 12px); }
+  .intro-proof { font-size: clamp(9px, 2.25vw, 12px); }
+}

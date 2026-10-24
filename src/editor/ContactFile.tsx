@@ -9,7 +9,7 @@ const LINKS = [
     display: 'linkedin.com/in/kasamthapamagar',
   },
   { label: 'x', href: 'https://x.com/kasamthapa89', display: 'x.com/kasamthapa89' },
-  { label: 'email', href: 'mailto:kasamthapamagar7@gmail.com', display: 'kasamthapamagar7@gmail.com' },
+  { label: 'email', href: 'mailto:kasamthapa89@gmail.com', display: 'kasamthapa89@gmail.com' },
 ]
 
 function Code() {

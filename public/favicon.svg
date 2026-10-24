@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#1e1e1e"/>
-  <text x="16" y="22" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="15" font-weight="700" fill="#3794ff" text-anchor="middle">&gt;_</text>
+  <rect width="32" height="32" fill="#090909"/>
+  <path d="M5 9h22M5 23h22" stroke="#e9e6e0" stroke-width="1.5"/>
+  <path d="M6 16h20" stroke="#e33b35" stroke-width="5"/>
+  <path d="M8 15h15M10 17h13" stroke="#090909" stroke-opacity=".32" stroke-width=".7"/>
 </svg>

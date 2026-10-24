@@ -21,6 +21,7 @@ export default function App() {
   const [terminalMounted, setTerminalMounted] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [editorMode, setEditorMode] = useState(false)
+  const [crtPoweringOn, setCrtPoweringOn] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [booted, setBooted] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout>>()
@@ -35,6 +36,12 @@ export default function App() {
     const t = setTimeout(() => setBooted(true), 550)
     return () => clearTimeout(t)
   }, [])
+
+  useEffect(() => {
+    if (!crtPoweringOn) return
+    const timer = window.setTimeout(() => setCrtPoweringOn(false), 1500)
+    return () => window.clearTimeout(timer)
+  }, [crtPoweringOn])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -78,7 +85,7 @@ export default function App() {
         id: 'email',
         label: 'Copy: Email Address',
         run: () => {
-          navigator.clipboard?.writeText('kasamthapamagar7@gmail.com')
+          navigator.clipboard?.writeText('kasamthapa89@gmail.com')
           showToast('Email copied to clipboard')
         },
       },
@@ -120,7 +127,7 @@ export default function App() {
     })
   }
 
-  if (!editorMode) return <PortfolioHome onOpenEditor={() => setEditorMode(true)} />
+  if (!editorMode) return <PortfolioHome isPoweringOn={crtPoweringOn} onOpenEditor={() => { setCrtPoweringOn(false); setEditorMode(true) }} />
 
   return (
     <div className="vscode-shell flex flex-col overflow-hidden relative">
