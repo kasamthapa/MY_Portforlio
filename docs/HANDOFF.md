@@ -44,6 +44,10 @@ The convex SVG displacement affects painted pixels while HTML hit areas remain i
 
 A fresh page load starts dark, then a warm phosphor dot stretches into a horizontal line. The center opens vertically into the page, with a short static/flicker settle. CSS lasts 1400 ms; App removes startup state at 1500 ms. It runs once per App load and is canceled when source mode opens. Reduced-motion users see the settled page immediately.
 
+### GitHub activity extension
+
+The owner requested a contribution calendar like the supplied reference, using his own GitHub activity. The implementation adds `kasamthapa`'s calendar after About and before Contact, within the existing charcoal/gold theme and middle scroller; the four HUD destinations stay unchanged. It shows the actual displayed-window total, active days, longest streak and best day. Saved real data renders immediately, then the public feed refreshes when needed; failures keep a dated fallback rather than inventing activity. The calendar supports a single keyboard exploration target and mobile horizontal scrolling. See [GitHub activity](GITHUB_ACTIVITY.md) before changing its source, dates or metrics.
+
 ## Current implementation boundaries
 
 - This portfolio is a static client app, not a backend for the four showcased products.
@@ -62,4 +66,4 @@ A fresh page load starts dark, then a warm phosphor dot stretches into a horizon
 5. Build or inspect as appropriate to the user's request. Be precise about what was actually checked.
 6. If publishing is authorized, use the existing Git/Vercel connection and verify the resulting deployment. Do not create a replacement hosting project or change the domain casually.
 
-See [Design system](DESIGN_SYSTEM.md), [Architecture](ARCHITECTURE.md), [Project flows](PROJECT_FLOWS.md), and [Deployment](DEPLOYMENT.md) for implementation detail.
+See [Design system](DESIGN_SYSTEM.md), [Architecture](ARCHITECTURE.md), [Project flows](PROJECT_FLOWS.md), [GitHub activity](GITHUB_ACTIVITY.md), and [Deployment](DEPLOYMENT.md) for implementation detail.

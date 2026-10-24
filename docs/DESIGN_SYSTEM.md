@@ -33,6 +33,7 @@ The words should introduce Kasam as a **software engineer in Kathmandu who works
 | 3 | `src/portrait-poster.css` | Current VHS portrait sleeve, image treatment, masthead, title, stamps, mask, and portrait sizing defaults. |
 | 4 | `src/crt-hud.css` | Current fixed-screen grid, stationary HUD, scrolling middle, readable sizing, equal carousel layout, story layout, contact target padding, and power-on effect. |
 | 5 | `src/project-system-flow.css` | Connected diagram visuals, typography, active signal, caption, playback controls, and mobile graph switch. |
+| 6 | `src/github-activity.css` | Contribution calendar, warm gold intensity levels, metrics, narrow-screen overflow, and focus styles. |
 
 `ProjectSystemFlow.tsx` also imports its component stylesheet. Preserve the established import order when changing styles. A selector near the start of `index.css` is often overridden later, sometimes in several places. Read the later matching rules and the dedicated files before editing a value.
 
@@ -119,7 +120,7 @@ The current screen’s desktop gutters are `--glass-gutter-x: clamp(14px, 2vw, 3
 
 ```text
 Stationary transparent header: HOME / clock / KASAM / WORK ABOUT CONTACT
-Scrolling middle: home → carousel → four system stories → about → contact
+Scrolling middle: home → carousel → four system stories → about → GitHub activity → contact
 Stationary transparent footer: Kathmandu time / B&W / SOURCE: CODE VIEW / EMAIL
 ```
 
@@ -189,6 +190,14 @@ Visual conventions:
 - At 1100px and below, story intro and diagram stack. At 760px and below, the mobile graph is displayed and the desktop one is hidden.
 
 When adding or moving a node, update both layouts and their edge endpoints. Arrowheads should meet node borders, branches should remain understandable, and labels should avoid crossings. Keep the graph floating on the shared glass; do not add another large rounded device panel around it.
+
+### GitHub activity
+
+The contribution calendar follows About, before Contact, and stays on the shared glass with fine top/bottom rules. It does not introduce another rounded box or HUD navigation item. Keep the serif heading, clean IBM Plex Mono labels, clear contribution total, three summary metrics, date range, fetched date and data status.
+
+The intensity ramp in `src/github-activity.css` is `#2b2923` (zero), `#4d4532`, `#7d6c47`, `#b69b66`, and `#e6cd93` (highest). Use the Less/More legend rather than importing GitHub's bright green palette. Calendar padding outside the displayed date range is invisible, distinct from a genuine zero-contribution date.
+
+The calendar fits the available width when possible and scrolls horizontally on small screens, initially showing the latest dates. Do not shrink cells until they become unreadable or let calendar overflow widen the whole screen. Cells are passive visual marks; one focusable calendar group supports arrow keys and Home/End, highlights the selected date, and announces its count below. This avoids hundreds of tiny pointer targets whose painted positions would shift under the CRT lens. Keep generous transparent targets for the profile link and retry button. See [GitHub activity](GITHUB_ACTIVITY.md) for data and accessibility details.
 
 ## 9. Motion and accessibility
 

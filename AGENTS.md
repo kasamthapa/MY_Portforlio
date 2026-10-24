@@ -4,6 +4,8 @@
 
 Read [README.md](README.md), [docs/HANDOFF.md](docs/HANDOFF.md), and the relevant parts of [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Read [docs/PROJECT_FLOWS.md](docs/PROJECT_FLOWS.md) before changing diagram content. The user's current request takes precedence over this handoff.
 
+Read [docs/GITHUB_ACTIVITY.md](docs/GITHUB_ACTIVITY.md) before changing contribution data, date calculations, or calendar interactions.
+
 Inspect the working tree before editing. It may contain ongoing work from the user or another agent. Preserve unrelated changes and never reset, overwrite, or discard them to simplify a task.
 
 ## Preserve these accepted decisions
@@ -18,6 +20,7 @@ Inspect the working tree before editing. It may contain ongoing work from the us
 - Keep the CRT power-on brief and once per page load. Section navigation and returning from source mode must not replay it. Honor reduced motion.
 - Preserve usable pointer and keyboard targets. The SVG filter displaces painted pixels without moving HTML hit boxes; tiny text-only links are especially easy to break.
 - Present Kasam as a software engineer. Canonical contact email: **kasamthapa89@gmail.com**.
+- GitHub activity belongs after About and before Contact, in the existing gold theme. Use real dated data for `kasamthapa`, retain the labeled fallback, and never fill missing dates with invented zero counts.
 
 ## Where to change things
 
@@ -30,6 +33,8 @@ Inspect the working tree before editing. It may contain ongoing work from the us
 | Portrait composition and distress | `src/portrait-poster.css` |
 | Shared diagram renderer and controls | `src/components/ProjectSystemFlow.tsx`, `src/project-system-flow.css` |
 | Project graph content and routing | `src/project-system-flows.ts` |
+| GitHub calendar, metrics layout and keyboard exploration | `src/components/GitHubActivity.tsx`, `src/github-activity.css` |
+| GitHub feed, validation, date window, cache and saved fallback | `src/lib/githubActivity.ts`, `src/data/github-activity.json`, `scripts/update-github-activity.mjs` |
 | Secondary editor project data/copy | `src/data/projects.ts`, `src/editor/` |
 | SEO, font loading, public URL | `index.html`, `public/sitemap.xml`, `public/robots.txt` |
 | Lens map generation | `scripts/generate-crt-lens-map.py`, `public/crt-lens-map.png` |

@@ -14,6 +14,7 @@ A React and TypeScript portfolio presented inside a single convex CRT screen. It
 | [Design system](docs/DESIGN_SYSTEM.md) | Theme, typography, CRT optics, assets, layout, motion, and interaction rules. |
 | [Architecture](docs/ARCHITECTURE.md) | Application structure, rendering modes, state, source map, and change recipes. |
 | [Project flows](docs/PROJECT_FLOWS.md) | What each project diagram means and which claims its implementation supports. |
+| [GitHub activity](docs/GITHUB_ACTIVITY.md) | Real contribution data, calendar metrics, caching, fallback refresh, and keyboard behavior. |
 | [Handoff](docs/HANDOFF.md) | Current accepted product decisions and important context from the redesign. |
 | [Deployment](docs/DEPLOYMENT.md) | Build output, Git/Vercel release process, and production verification. |
 
@@ -41,6 +42,7 @@ The build runs `tsc` followed by `vite build` and writes `dist/`. The preview co
 - `src/App.tsx` selects portfolio/editor mode and owns the initial CRT power-on lifecycle.
 - `src/components/PortfolioHome.tsx` owns the public page, navigation, project carousel, contact section, and lens filter definitions.
 - `src/components/ProjectSystemFlow.tsx` renders diagrams configured in `src/project-system-flows.ts`.
+- `src/components/GitHubActivity.tsx` displays the contribution calendar; `src/lib/githubActivity.ts` validates and loads its data, with a dated fallback in `src/data/github-activity.json`.
 - `public/` contains the portrait, torn mask, lens map, favicon, and metadata assets.
 - `scripts/generate-crt-lens-map.py` regenerates the active lens map using Python's standard library.
 
@@ -53,8 +55,9 @@ The stylesheet import order in `src/main.tsx` is significant. Read the design an
 3. Project cards form an evenly spaced horizontal filmstrip. Clicking a card flips it to a short brief; clicking again restores its artwork.
 4. Detailed connected system flows sit below the cards. **HOW IT WORKS** scrolls to the selected project's flow.
 5. Contact links use generous transparent hit areas to compensate for the painted displacement from the lens.
+6. A gold GitHub contribution calendar follows About, before Contact, with activity totals and keyboard exploration. It starts with saved real data, then refreshes from a public contribution feed when the local cache is older than one hour.
 
-Project destinations, external social profiles, and Google Fonts are external services. Their availability is independent of this static app. CA Telecopy is a preferred family in CSS but is not distributed with this repository; see the typography notes before changing font declarations.
+Project destinations, external social profiles, Google Fonts, and the public GitHub contribution feed are external services. Their availability is independent of this static app. The activity calendar retains a dated saved calendar if the feed fails; see [GitHub activity](docs/GITHUB_ACTIVITY.md), including the snapshot refresh command. CA Telecopy is a preferred family in CSS but is not distributed with this repository; see the typography notes before changing font declarations.
 
 ## Publishing
 

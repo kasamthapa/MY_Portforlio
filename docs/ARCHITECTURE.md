@@ -30,14 +30,18 @@ npm run preview
 | `index.html` | Document metadata, canonical URL, fonts, icons, social preview, Person JSON-LD, pre-paint editor theme choice |
 | `src/main.tsx` | React root under `StrictMode`; global stylesheet import order |
 | `src/App.tsx` | CRT/editor mode switch, startup state, editor tabs and theme, command palette, terminal and toast state |
-| `src/components/PortfolioHome.tsx` | Public CRT markup; four sections; project posters, briefs and stories; nested navigation and carousel behavior; SVG lens definitions |
+| `src/components/PortfolioHome.tsx` | Public CRT markup; four navigation destinations plus activity section; project posters, briefs and stories; nested navigation and carousel behavior; SVG lens definitions |
 | `src/components/ProjectSystemFlow.tsx` | Typed SVG graph renderer, node and stage selection, autoplay and transport controls |
 | `src/project-system-flows.ts` | Four project-specific graphs, explicit desktop/mobile paths, narration and active stage sets |
+| `src/components/GitHubActivity.tsx` | Contribution calendar after About, summary metrics, live status, retry and keyboard exploration |
+| `src/lib/githubActivity.ts` | Public feed loading, validation, UTC calendar/window calculations, metrics and optional local cache |
+| `src/data/github-activity.json` | Real, dated contribution snapshot bundled as the initial/offline fallback |
 | `src/index.css` | Tailwind entry, editor variables, base styles, and accumulated portfolio/layout history |
 | `src/poster-theme.css` | Public charcoal, cream and gold palette; final glass silhouette, gutters and filter attachment |
 | `src/portrait-poster.css` | Distressed portrait, torn/deckled edge treatment, masthead, title and VHS stamps |
 | `src/crt-hud.css` | Current three-row screen layout, transparent stationary HUD, scrolling middle, current carousel alignment, project story layout, contact hit areas and power-on animation |
 | `src/project-system-flow.css` | Diagram terminals, connectors, active signal, captions, controls and responsive graph selection |
+| `src/github-activity.css` | Gold contribution levels, responsive calendar, readable summary and focus styles |
 | `src/editor/registry.tsx` | File tabs for the secondary editor experience |
 | `src/editor/*File.tsx` | Code-like content and rendered preview for each editor tab |
 | `src/data/projects.ts` and `src/types/index.ts` | Older, separate typed project content consumed by editor Projects view |
@@ -45,6 +49,7 @@ npm run preview
 | `src/hooks/` | Reusable reduced-motion and in-view behavior, mainly used by secondary views |
 | `public/` | Assets copied to the deployment root: portrait images, lens map, icons, social preview, manifest and crawler files |
 | `scripts/generate-crt-lens-map.py` | Standard-library-only generator for the active `public/crt-lens-map.png` |
+| `scripts/update-github-activity.mjs` | Fetches the real contribution feed and replaces the dated bundled snapshot |
 | `vite.config.ts`, `tsconfig*.json`, `tailwind.config.js`, `postcss.config.js` | Build and styling configuration |
 
 ## Public screen structure
@@ -64,6 +69,7 @@ App
    │     ├─ story-critch            brief introduction + connected system flow
    │     ├─ story-rapporteur        brief introduction + connected system flow
    │     ├─ about                   software engineer positioning
+   │     ├─ github-activity         contribution calendar and derived metrics
    │     └─ contact                 email and external social links
    └─ crt-hud-footer                time, B&W, code view, email
 ```
@@ -73,6 +79,7 @@ The header and footer are stationary because they occupy rows 1 and 3 of a viewp
 ### Navigation and section state
 
 - Supported public navigation hashes are `#home`, `#work`, `#about`, and `#contact`.
+- GitHub activity sits between About and Contact in the same middle scroller. Its `github-activity` element ID does not add a fifth HUD link or a new main navigation route.
 - `navigateToSection` updates history and scrolls `.portfolio-scroll` to the target's `offsetTop`, smoothly unless reduced motion is requested.
 - Initial loading and browser back/forward synchronize these hashes using an animation frame and `popstate`.
 - An `IntersectionObserver` rooted in `.portfolio-scroll` updates the current navigation marker for the four main sections.
@@ -120,10 +127,17 @@ The active portrait is `/kasam-portrait-vhs.jpg`. `portrait-poster.css` supplies
 3. `portrait-poster.css`
 4. `crt-hud.css`
 5. `project-system-flow.css`
+6. `github-activity.css`
 
 The graph component also imports its own stylesheet. All are global CSS, not CSS modules. Inspect computed styles and the later, more specific overrides when changing a component. In particular, old centered coverflow and section sizing rules in `index.css` are overridden by the current `.portfolio-home ...` rules in `crt-hud.css`.
 
 Historical CSS remains for `.portfolio-rail`, `.case-*`, `.trace-*`, `.project-film*` and `.project-channel*`. Those selectors are not evidence that those older UI features are currently rendered. Search the current JSX before changing or restoring one. A broad CSS deletion or reordering can affect the retained editor mode; consolidate only as a deliberate refactor.
+
+## GitHub activity data
+
+`GitHubActivity` starts from the newer validated saved record (optional local cache or real bundled snapshot), then calls `loadGitHubActivity`. The browser fetches the public contribution feed for `kasamthapa` without credentials or a token. A successful result is cached for one hour; refresh failure preserves the newer dated saved record and exposes a retry action. Concurrent mounts share one request, including React StrictMode's development effect cycle.
+
+The loader validates dates, counts, levels, duplicates and a complete consecutive 12-month UTC date window. Summary metrics are derived from those displayed dates, not the feed's independent total. The calendar is a single focusable group with passive cells, arrow-key date exploration and live count narration, avoiding tiny displaced pointer targets inside the lens. On narrow screens only the calendar scrolls horizontally. See [GitHub activity](GITHUB_ACTIVITY.md) for the endpoint contract, exact calculations, failure behavior and snapshot refresh command.
 
 ## Secondary editor experience
 

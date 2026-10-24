@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react'
 import { gsap } from 'gsap'
 import ProjectSystemFlow from './ProjectSystemFlow'
+import GitHubActivity from './GitHubActivity'
 import { projectSystemFlows } from '../project-system-flows'
 
 const socials = [
@@ -337,6 +338,8 @@ export default function PortfolioHome({ onOpenEditor, isPoweringOn }: Props) {
             </div>
           </div>
         </section>
+
+        <GitHubActivity />
 
         <footer className="portfolio-footer" id="contact">
           <div className="contact-copy"><span className="section-index">HAVE A GOOD PROBLEM?</span><h2>Let’s make it clearer.</h2><a className="contact-email" href="mailto:kasamthapa89@gmail.com">kasamthapa89@gmail.com <span>↗</span></a><nav className="contact-socials" aria-label="Find me online">{socials.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">{item.label}<span>↗</span></a>)}</nav></div>

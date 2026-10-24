@@ -5,6 +5,7 @@ import './poster-theme.css'
 import './portrait-poster.css'
 import './crt-hud.css'
 import './project-system-flow.css'
+import './github-activity.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
